@@ -1,13 +1,16 @@
-import "./global.css"
+import './global.css';
 // App.js
 import { StyleSheet, Text, View } from 'react-native';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './store';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from './src/screens/HomeScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
-import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ChatsScreen from './src/screens/ChatsScreen';
@@ -18,66 +21,104 @@ import MoodScreen from './src/screens/MoodScreen';
 import OnBoardingScreen from './src/screens/OnBoardingScreen';
 import 'react-native-gesture-handler';
 import 'react-native-get-random-values';
-import ChatScreen from "./src/screens/ChatScreen";
+import ChatScreen from './src/screens/ChatScreen';
+import { selectUser, setUser } from './src/slices/navSlice';
+import useUserFetch from './src/hooks/useUserFetch';
+import { useEffect } from 'react';
+import GroupChatScreen from './src/screens/GroupChatScreen';
+import ProfessionalChatScreen from './src/screens/ProfessionalChatScreen';
+import ProfessionalScreen from './src/screens/ProfessionalScreen';
+import ProfessionalDetailsScreen from './src/screens/ProfessionalDetailsScreen';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function MainTabs() {
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const { fetchedUser, loading, error } = useUserFetch(user?.id);
+
+  useEffect(() => {
+    if (fetchedUser) {
+      dispatch(
+        setUser({
+          ...user,
+          firstName: fetchedUser.firstName,
+          lastName: fetchedUser.lastName,
+        })
+      );
+    }
+  }, [fetchedUser, dispatch]);
+
   return (
     <Tab.Navigator
-    screenOptions={({ route }) => ({
-      tabBarActiveTintColor: '#ea580c',
-      tabBarInactiveTintColor: '#9ca3af', // gray-500
-      tabBarIcon: ({ focused, color, size }) => {
-        let iconName;
-  
-        if (route.name === 'Home') {
-          iconName = focused ? 'home' : 'home-outline';
-        } else if (route.name === 'Chats') {
-          iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-        } else if (route.name === 'Mood') {
-          iconName = focused ? 'happy' : 'happy-outline';
-        } else if (route.name === 'Account') {
-          iconName = focused ? 'person' : 'person-outline';
-        }
-  
-        return <Ionicons name={iconName} size={size} color={color} />;
-      },
-      tabBarLabel: ({ focused, color }) => {
-        let label;
-  
-        if (route.name === 'Home') {
-          label = 'Home';
-        } else if (route.name === 'Chats') {
-          label = 'Chats';
-        } else if (route.name === 'Mood') {
-          label = 'Mood';
-        } else if (route.name === 'Account') {
-          label = 'Account';
-        }
-  
-        return (
-          <Text style={{ color, fontWeight: focused ? '700' : 'normal' }}>
-            {label}
-          </Text>
-        );
-      },
-      tabBarStyle: {
-        height: 67, // Optional custom height
-        paddingBottom: 15,
-        borderTopColor:'#606060',
-        backgroundColor: '#000000', // Set background color to black
-      },
-    })}
-  >
-    <Tab.Screen options={{ headerShown: false }} name="Home" component={HomeScreen} />
-    <Tab.Screen options={{ headerShown: false }} name="Chats" component={ChatsScreen} />
-    <Tab.Screen options={{ headerShown: false }} name="Mood" component={MoodScreen} />
-    <Tab.Screen options={{ headerShown: false }} name="Account" component={AccountScreen} />
-  </Tab.Navigator>
-  
+      screenOptions={({ route }) => ({
+        tabBarActiveTintColor: '#ea580c',
+        tabBarInactiveTintColor: '#9ca3af', // gray-500
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Chats') {
+            iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
+          } else if (route.name === 'Mood') {
+            iconName = focused ? 'happy' : 'happy-outline';
+          } else if (route.name === 'Account') {
+            iconName = focused ? 'person' : 'person-outline';
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarLabel: ({ focused, color }) => {
+          let label;
+
+          if (route.name === 'Home') {
+            label = 'Home';
+          } else if (route.name === 'Chats') {
+            label = 'Chats';
+          } else if (route.name === 'Mood') {
+            label = 'Mood';
+          } else if (route.name === 'Account') {
+            label = 'Account';
+          }
+
+          return (
+            <Text style={{ color, fontWeight: focused ? '700' : 'normal' }}>
+              {label}
+            </Text>
+          );
+        },
+        tabBarStyle: {
+          height: 67, // Optional custom height
+          paddingBottom: 15,
+          borderTopColor: '#606060',
+          backgroundColor: '#000000', // Set background color to black
+        },
+      })}
+    >
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name="Home"
+        component={HomeScreen}
+      />
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name="Chats"
+        component={ChatsScreen}
+      />
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name="Mood"
+        component={MoodScreen}
+      />
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name="Account"
+        component={AccountScreen}
+      />
+    </Tab.Navigator>
   );
 }
 
@@ -105,7 +146,7 @@ export default function App() {
               initialRouteName="Onboarding"
               screenOptions={{
                 headerShown: false,
-                gestureEnabled: true,
+                gestureEnabled: false,
                 cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
                 transitionSpec: {
                   open: { animation: 'timing', config: { duration: 500 } },
@@ -115,6 +156,19 @@ export default function App() {
             >
               <Stack.Screen name="Onboarding" component={OnBoardingScreen} />
               <Stack.Screen name="LoginStack" component={LoginStack} />
+              <Stack.Screen name="GroupChat" component={GroupChatScreen} />
+              <Stack.Screen
+                name="ProfessionalChat"
+                component={ProfessionalChatScreen}
+              />
+              <Stack.Screen
+                name="Professional"
+                component={ProfessionalScreen}
+              />
+              <Stack.Screen
+                name="ProfessionalDetails"
+                component={ProfessionalDetailsScreen}
+              />
               <Stack.Screen name="Chat" component={ChatScreen} />
               <Stack.Screen name="Main" component={MainTabs} />
             </Stack.Navigator>

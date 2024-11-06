@@ -1,81 +1,103 @@
-import { View, Text, SafeAreaView, ScrollView, TextInput, TouchableOpacity, StatusBar } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+  StatusBar,
+  ActivityIndicator,
+} from 'react-native';
+import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useSelector } from 'react-redux';
-import { selectQuestion, selectUser } from '../slices/navSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectChatHistory,
+  selectUser,
+  setChatHistory,
+} from '../slices/navSlice';
 import TopBarTwo from '../components/TopBarTwo';
-import { chats } from '../hooks/Database';
+import apiRequest from '../utils/api';
 
 const ChatScreen = () => {
-  const [messageText, setMessageText] = useState('');
-  const [currentChat, setCurrentChat] = useState(null);
-  
-  const chatData = useSelector(selectQuestion);
+  const [message, setMessage] = useState('');
+  const [chatHistor, setChatHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
   const user = useSelector(selectUser);
-  const uid = user.id;
 
-  // Use useEffect to update `currentChat` whenever `chatData` changes
+  const dispatch = useDispatch();
+
+  // Fetch chat history on component mount
   useEffect(() => {
-    if (chatData?.id) {
-      // Find existing chat by ID or use chatData directly if it's a new message
-      const chat = chats.find((c) => c?.id === chatData?.id) || chatData;
-      setCurrentChat(chat);
-    } else {
-      // Initialize a new chat from scratch
-      setCurrentChat({
-        id: null,
-        messages: chatData?.messageText ? [{ 
-          messageId: Math.random().toString(36).substring(7),
-          text: chatData.messageText,
-          senderId: uid,
-          timestamp: Date.now()
-        }] : []
-      });
-    }
-  }, [chatData, uid]);
+    const fetchChatHistory = async () => {
+      try {
+        const response = await apiRequest.get(`/chats/chatHistory/${user.id}`);
+        setChatHistory(response.data || []);
+      } catch (error) {
+        // console.error('Error fetching chat history:', error);
+        setChatHistory([]);
+      }
+    };
 
-  const handleSendMessage = () => {
-    if (messageText.trim()) {
-      // Update the messages array in currentChat with the new message
-      setCurrentChat((prevChat) => ({
-        ...prevChat,
-        messages: [
-          ...(prevChat?.messages || []),
-          {
-            messageId: Math.random().toString(36).substring(7),
-            text: messageText,
-            senderId: uid,
-            timestamp: Date.now(),
-          },
-        ],
-      }));
-      setMessageText('');
+    fetchChatHistory();
+  }, []);
+
+  const handleSubmit = async () => {
+    if (!message.trim()) return; // Prevent sending empty messages
+    setLoading(true);
+    try {
+      const response = await apiRequest.post('/chats/postChat', {
+        userId: user.id,
+        message,
+      });
+      const dataResponse = await apiRequest.get(
+        `/chats/chatHistory/${user.id}`
+      );
+
+      dispatch(setChatHistory(dataResponse.data));
+      setChatHistory([
+        ...chatHistor,
+        { user: user.firstName, text: message },
+        { user: 'Serenity AI', text: response.data.response },
+      ]);
+      setMessage('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-[#101010]">
-       <StatusBar barStyle="light-content" backgroundColor="#101010" />
+      <StatusBar barStyle="light-content" backgroundColor="#101010" />
       <View className="w-full bg-[#101010] p-3 pt-6">
         <TopBarTwo title="Chat" />
       </View>
+
       <ScrollView className="bg-[#101010] py-3 w-full flex-1">
-        
         <View className="flex-1 relative p-3">
-          {currentChat?.messages && currentChat.messages.length > 0 ? (
-            currentChat.messages.map((message) => (
+          {chatHistor.length > 0 ? (
+            chatHistor.map((item, index) => (
               <View
-                key={message.messageId}
+                key={index}
                 className={`p-4 my-2 ${
-                  message.senderId === uid
+                  item.user === user.firstName
                     ? 'bg-[#505050] ml-auto rounded-lg rounded-tr-none'
                     : 'bg-[#202020] rounded-lg rounded-tl-none mr-auto'
                 }`}
               >
-                <Text className="text-white">{message.text}</Text>
-                <Text className="text-gray-400 text-xs">
-                  {new Date(message.timestamp).toLocaleTimeString()}
+                <Text
+                  className={`font-bold ${
+                    item.user === user.firstName
+                      ? 'text-green-600'
+                      : 'text-orange-600'
+                  }`}
+                >
+                  {item.user}
                 </Text>
+                <Text className="text-white">{item.text}</Text>
               </View>
             ))
           ) : (
@@ -85,16 +107,26 @@ const ChatScreen = () => {
           )}
         </View>
       </ScrollView>
+
       <View className="flex-row items-center w-full bg-[#000000] border-t border-[#303030] p-3 pt-2 pb-6">
         <TextInput
-          value={messageText}
-          onChangeText={setMessageText}
-          placeholder="How may I help..."
-          placeholderTextColor="#808080"
           className="flex-1 h-[52px] px-4 bg-[#202020] text-gray-200 rounded-lg text-lg"
+          value={message}
+          onChangeText={setMessage}
+          placeholder="Enter a prompt here..."
+          placeholderTextColor="#808080"
+          editable={!loading}
         />
-        <TouchableOpacity onPress={handleSendMessage} className="ml-4">
-          <Ionicons name="send" size={24} color="#ea580c" />
+        <TouchableOpacity
+          onPress={handleSubmit}
+          className="ml-4"
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color="#ea580c" />
+          ) : (
+            <Ionicons name="send" size={24} color="#ea580c" />
+          )}
         </TouchableOpacity>
       </View>
     </SafeAreaView>
