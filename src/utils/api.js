@@ -3,7 +3,8 @@
 import axios from 'axios';
 
 // const devUrl = 'http://localhost:6500/api';
-const devUrl = 'http://192.168.193.107:6500/api';
+// const devUrl = 'http://192.168.193.107:6500/api';
+const devUrl = 'https://mentalhealthbackend-abf08608660a.herokuapp.com/api'; 
 // exp://192.168.0.106:8081
 // exp://192.168.193.107:8081
 const apiRequest = axios.create({

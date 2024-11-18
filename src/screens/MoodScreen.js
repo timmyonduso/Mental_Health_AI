@@ -26,6 +26,7 @@ import {
 } from '../slices/moodSlice';
 import { moods } from '../hooks/Database';
 import apiRequest from '../utils/api';
+import { useTheme } from '../../themeContext';
 
 const MoodScreen = () => {
   const [selectedMood, setSelectedMood] = useState(null);
@@ -34,6 +35,7 @@ const MoodScreen = () => {
   const moodLog = useSelector(selectMoodLog);
   const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
+  const { theme } = useTheme();
 
   const handleMoodSubmit = async () => {
     dispatch(setLoading(true)); // Set loading to true at the start
@@ -86,20 +88,21 @@ const MoodScreen = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#101010' }}>
-      <StatusBar barStyle="light-content" backgroundColor="#101010" />
-      <View style={{ width: '100%', padding: 12, paddingTop: 24 }}>
+    <SafeAreaView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} flex-1 `}>
+    <StatusBar barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`} backgroundColor={`${theme === 'dark' ? '#101010' : '#ffffff'}`} />
+     <View style={{ width: '100%', padding: 12, paddingTop: 24 }}>
         <TopBarTwo title="Mood Tracker" />
       </View>
 
       <ScrollView
         style={{
-          backgroundColor: '#101010',
           paddingVertical: 12,
           width: '100%',
         }}
+        className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'}`}
       >
         <MoodSelection
+          theme={theme}
           moods={moods}
           selectedMood={selectedMood}
           setSelectedMood={handleMoodSelect}
@@ -109,6 +112,7 @@ const MoodScreen = () => {
         />
         <MoodAnalysis moods={moods} moodLog={moodLog} home={false} />
         <MoodHistory
+          theme={theme}
           moodLog={moodLog}
           moods={moods}
           onDeleteMood={handleDeleteMood}

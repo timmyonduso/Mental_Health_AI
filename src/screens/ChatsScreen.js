@@ -19,12 +19,18 @@ import {
 } from '../slices/navSlice';
 import { TouchableRipple, IconButton } from 'react-native-paper'; // Import IconButton for the delete button
 import apiRequest from '../utils/api';
+import { useTheme } from '../../themeContext';
+import Markdown from 'react-native-markdown-display';
+import { color } from 'react-native-elements/dist/helpers';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 
 const ChatsScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const chatHistory = useSelector(selectChatHistory);
+  const { theme } = useTheme();
 
   // Fetch chat history on component mount
   useEffect(() => {
@@ -79,13 +85,13 @@ const ChatsScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#101010]">
-      <StatusBar barStyle="light-content" backgroundColor="#101010" />
-      <View className="w-full bg-[#101010] p-3 pt-6">
+    <SafeAreaView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} flex-1 `}>
+    <StatusBar barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`} backgroundColor={`${theme === 'dark' ? '#101010' : '#ffffff'}`} />
+      <View className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} w-full p-3 pt-6`}>
         <TopBarTwo title="Chats" />
       </View>
-      <ScrollView className="bg-[#101010] w-full">
-        <View className="flex-1 gap-3 mt-2">
+      <ScrollView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} w-full`}>
+        <View className="flex-1 mt-2">
           {chatHistory && chatHistory?.length > 0 ? (
             <>
               {chatHistory?.map((chat) =>
@@ -103,8 +109,8 @@ const ChatsScreen = () => {
                           className="flex-row justify-between"
                         >
                           <TouchableRipple
-                            className="bg-[#202020] p-4 mx-3 rounded-lg flex-1"
-                            rippleColor="#505050"
+                            className={`${theme === 'dark' ? 'border-b border-[#202020]' : 'border-b border-gray-200'} p-2  flex-1`}
+                            rippleColor="#999999"
                             onPress={() => {
                               dispatch(
                                 setQuestion({
@@ -114,23 +120,41 @@ const ChatsScreen = () => {
                                     'Untitled Conversation',
                                 })
                               );
-                              Vibration.vibrate(77);
+                              
                               navigation.navigate('Chat');
                             }}
                           >
-                            <View>
-                              {/* Display the conversation title */}
-                              <Text className="text-white text-xl font-semibold">
-                                {conversation.title || 'Untitled Conversation'}
-                              </Text>
+                            <View className='w-full flex-row justify-between items-center pl-3'>
+                              
+
+<Markdown
+  style={{
+    body: {
+      color: theme === 'dark' ? '#e5e7eb' : '#1F2937', // text color based on theme
+      fontSize: 15, // text-lg
+      fontWeight: '400', // font-medium
+      width: '75%', // w-3/4
+    },
+   
+  }}
+>
+ {conversation.title}
+</Markdown>
+
+                           
+                          <TouchableOpacity
+                            onPress={() => handleDeletePress(conversation._id)} // Pass the conversation ID
+                           className=' p-2 h-full '
+            >
+              <Ionicons 
+                name='ellipsis-vertical'
+                size={19}
+                color={`${theme === 'dark' ? '#e5e7eb' : '#202020'}`}
+                />
+            </TouchableOpacity>
                             </View>
                           </TouchableRipple>
-                          <IconButton
-                            icon="delete"
-                            color="red"
-                            size={24}
-                            onPress={() => handleDeletePress(conversation._id)} // Pass the conversation ID
-                          />
+                         
                         </View>
                       )
                     )
@@ -138,7 +162,7 @@ const ChatsScreen = () => {
               )}
             </>
           ) : (
-            <Text className="w-full text-center text-white text-xl font-semibold">
+            <Text className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}  text-center mt-4`}>
               No Chats Available!
             </Text>
           )}

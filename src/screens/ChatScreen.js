@@ -19,12 +19,15 @@ import {
 } from '../slices/navSlice';
 import TopBarTwo from '../components/TopBarTwo';
 import apiRequest from '../utils/api';
+import { useTheme } from '../../themeContext';
+import Markdown from 'react-native-markdown-display';
 
 const ChatScreen = () => {
   const [message, setMessage] = useState('');
-  const [chatHistor, setChatHistory] = useState([]);
+  const [chatHistor, setChatHistoryy] = useState([]);
   const [loading, setLoading] = useState(false);
   const user = useSelector(selectUser);
+  const { theme } = useTheme();
 
   const dispatch = useDispatch();
 
@@ -33,10 +36,10 @@ const ChatScreen = () => {
     const fetchChatHistory = async () => {
       try {
         const response = await apiRequest.get(`/chats/chatHistory/${user.id}`);
-        setChatHistory(response.data || []);
+        setChatHistoryy(response.data || []);
       } catch (error) {
         // console.error('Error fetching chat history:', error);
-        setChatHistory([]);
+        setChatHistoryy([]);
       }
     };
 
@@ -56,7 +59,7 @@ const ChatScreen = () => {
       );
 
       dispatch(setChatHistory(dataResponse.data));
-      setChatHistory([
+      setChatHistoryy([
         ...chatHistor,
         { user: user.firstName, text: message },
         { user: 'Serenity AI', text: response.data.response },
@@ -70,13 +73,13 @@ const ChatScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#101010]">
-      <StatusBar barStyle="light-content" backgroundColor="#101010" />
-      <View className="w-full bg-[#101010] p-3 pt-6">
+    <SafeAreaView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} flex-1 `}>
+    <StatusBar barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`} backgroundColor={`${theme === 'dark' ? '#101010' : '#ffffff'}`} />
+      <View className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} w-full p-3 pt-6`}>
         <TopBarTwo title="Chat" />
       </View>
 
-      <ScrollView className="bg-[#101010] py-3 w-full flex-1">
+      <ScrollView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} py-3 w-full flex-1`}>
         <View className="flex-1 relative p-3">
           {chatHistor.length > 0 ? (
             chatHistor.map((item, index) => (
@@ -84,9 +87,10 @@ const ChatScreen = () => {
                 key={index}
                 className={`p-4 my-2 ${
                   item.user === user.firstName
-                    ? 'bg-[#505050] ml-auto rounded-lg rounded-tr-none'
-                    : 'bg-[#202020] rounded-lg rounded-tl-none mr-auto'
+                    ? `${theme === 'dark' ? 'bg-[#505050]' : 'bg-gray-100'} ml-auto rounded-lg rounded-tr-none`
+                    : `${theme === 'dark' ? 'bg-[#202020]' : 'bg-gray-100'} mr-auto rounded-lg rounded-tl-none`
                 }`}
+                
               >
                 <Text
                   className={`font-bold ${
@@ -97,20 +101,36 @@ const ChatScreen = () => {
                 >
                   {item.user}
                 </Text>
-                <Text className="text-white">{item.text}</Text>
+              
+<Markdown
+  style={{
+    body: {
+      color: theme === 'dark' ? '#FFFFFF' : '#1F2937', // text color based on theme
+      fontSize: 15, // text-lg
+      fontWeight: '500', // font-medium
+    },
+    heading1: {
+      color: theme === 'dark' ? '#FFFFFF' : '#1F2937',
+    },
+    
+  }}
+>
+  {item.text}
+</Markdown>
+
               </View>
             ))
           ) : (
-            <Text className="text-gray-400 text-center mt-4">
+            <Text className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}  text-center mt-4`}>
               Start a new chat.
             </Text>
           )}
         </View>
       </ScrollView>
 
-      <View className="flex-row items-center w-full bg-[#000000] border-t border-[#303030] p-3 pt-2 pb-6">
+      <View  className={`${theme === 'dark' ? 'bg-[#000000] border-t border-[#303030]' : 'bg-gray-100 border-t border-gray-200'} flex-row items-center w-full  p-3 pt-2 pb-4`}>
         <TextInput
-          className="flex-1 h-[52px] px-4 bg-[#202020] text-gray-200 rounded-lg text-lg"
+          className={`${theme === 'dark' ? 'bg-[#202020] text-gray-200' : 'bg-white text-black'} flex-1 h-[52px] px-5  rounded-full text-lg`}
           value={message}
           onChangeText={setMessage}
           placeholder="Enter a prompt here..."

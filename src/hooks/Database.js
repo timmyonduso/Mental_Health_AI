@@ -173,8 +173,7 @@ export const moodLog = [
 export const professionalsData = [
   {
     userId: '1',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
+    imageUrl: 'https://res.cloudinary.com/ddsp4vxxc/image/upload/v1730958548/psych5_djz94s.jpg',
     name: 'Dr. Kevin Mutiso',
     description: 'Experienced therapist specializing in mental health.',
     profession: 'Therapist',
@@ -182,8 +181,7 @@ export const professionalsData = [
   },
   {
     userId: '2',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
+    imageUrl: 'https://res.cloudinary.com/ddsp4vxxc/image/upload/v1730958548/psych8_cixkl2.jpg',
     name: 'Maureen Atieno',
     description: 'Certified life coach helping you achieve your goals.',
     profession: 'Life Coach',
@@ -191,8 +189,7 @@ export const professionalsData = [
   },
   {
     userId: '3',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
+    imageUrl: 'https://res.cloudinary.com/ddsp4vxxc/image/upload/v1730958549/psych1_ohewkc.jpg',
     name: 'Dr. Alice Nanjala',
     description: 'Psychologist focusing on couple wellness.',
     profession: 'Psychologist',
@@ -200,8 +197,7 @@ export const professionalsData = [
   },
   {
     userId: '4',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c', // Changed the URL to be unique
+    imageUrl: 'https://res.cloudinary.com/ddsp4vxxc/image/upload/v1730958547/psych7_sv4aol.jpg',
     name: 'Victor Onduso',
     description: 'Counselor focusing on student wellness.',
     profession: 'Counselor',
@@ -210,8 +206,7 @@ export const professionalsData = [
   // Duplicates
   {
     userId: '5',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
+    imageUrl: 'https://res.cloudinary.com/ddsp4vxxc/image/upload/v1730958548/psych2_djfkkt.jpg',
     name: 'John Kiragu',
     description: 'Experienced therapist specializing in mental health.',
     profession: 'Therapist',
@@ -219,8 +214,7 @@ export const professionalsData = [
   },
   {
     userId: '6',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
+    imageUrl: 'https://res.cloudinary.com/ddsp4vxxc/image/upload/v1730958549/psych3_f9zgeb.jpg',
     name: 'Jane Wanjiru',
     description: 'Certified life coach helping you achieve your goals.',
     profession: 'Life Coach',
@@ -228,8 +222,7 @@ export const professionalsData = [
   },
   {
     userId: '7',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
+    imageUrl: 'https://res.cloudinary.com/ddsp4vxxc/image/upload/v1730958548/psych6_k3lf4o.jpg', // Changed the URL to be unique
     name: 'Dr. Alice Bambi',
     description: 'Psychologist focusing on couple wellness.',
     profession: 'Psychologist',
@@ -237,8 +230,7 @@ export const professionalsData = [
   },
   {
     userId: '8',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
+    imageUrl: 'https://res.cloudinary.com/ddsp4vxxc/image/upload/v1730958548/psych4_xwvtyl.jpg',
     name: 'Johnie Ondicho',
     description: 'Counselor focusing on student wellness.',
     profession: 'Counselor',
@@ -246,8 +238,7 @@ export const professionalsData = [
   },
   {
     userId: '9',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
+    imageUrl: 'https://res.cloudinary.com/ddsp4vxxc/image/upload/v1730958548/psych4_xwvtyl.jpg',
     name: 'Dancun Muiga',
     description: 'Experienced therapist specializing in mental health.',
     profession: 'Therapist',
@@ -255,8 +246,7 @@ export const professionalsData = [
   },
   {
     userId: '10',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
+    imageUrl: 'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
     name: 'James Otieno',
     description: 'Certified life coach helping you achieve your goals.',
     profession: 'Life Coach',
@@ -264,8 +254,7 @@ export const professionalsData = [
   },
   {
     userId: '11',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
+    imageUrl: 'https://res.cloudinary.com/ddsp4vxxc/image/upload/v1730958548/psych5_djz94s.jpg',
     name: 'Dr. Luke Wesonga',
     description: 'Psychologist focusing on couple wellness.',
     profession: 'Psychologist',
@@ -273,8 +262,7 @@ export const professionalsData = [
   },
   {
     userId: '12',
-    imageUrl:
-      'https://lh3.googleusercontent.com/a/ACg8ocLdNgEU7XrBIQp8mwgtO75axXXKZ9ztOXJ-H-9CzJv9LYEEkzRj=s96-c',
+    imageUrl: 'https://res.cloudinary.com/ddsp4vxxc/image/upload/v1730958548/psych5_djz94s.jpg',
     name: 'Ibrahim Musa',
     description: 'Counselor focusing on student wellness.',
     profession: 'Counselor',

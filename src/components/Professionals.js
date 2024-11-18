@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentTab, setProfessional } from '../slices/navSlice';
 import { useNavigation } from '@react-navigation/native';
 import { professionalsData } from '../hooks/Database';
+import { useTheme } from '../../themeContext';
 
 const Professionals = () => {
   const currentTab = useSelector(selectCurrentTab);
-  console.log(currentTab);
+  const {theme} = useTheme();
   const filteredProfessionals = professionalsData.filter(
     (professional) => professional.activeTab === currentTab.title
   );
@@ -25,17 +26,17 @@ const Professionals = () => {
         );
         navigation.navigate('ProfessionalDetails');
       }}
-      className="bg-[#202020] rounded-lg overflow-hidden mr-3 p-3 w-48"
-      rippleColor="#404040"
+      className={`${theme === 'dark' ? 'bg-[#202020]' : 'bg-gray-50 border border-gray-100'} rounded-lg overflow-hidden mr-3 p-3 w-48`}
+      rippleColor="#999999"
     >
       <View className="items-center">
         <Image
           source={{ uri: item.imageUrl }}
           className="w-20 h-20 rounded-full mb-2"
         />
-        <Text className="text-white text-lg font-semibold">{item.name}</Text>
+        <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{item.name}</Text>
         <Text className="text-orange-600 text-sm">{item.profession}</Text>
-        <Text className="text-gray-400 text-center text-sm mt-1">
+        <Text className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} text-center text-sm mt-1`}>
           {item.description}
         </Text>
       </View>
@@ -43,8 +44,8 @@ const Professionals = () => {
   );
 
   return (
-    <View className="flex-1 bg-[#101010] p-3">
-      <Text className="text-white text-2xl font-semibold mb-4">
+    <View className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} flex-1 p-3`}>
+      <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'} text-2xl font-semibold mb-4`}>
         Our Professionals
       </Text>
 

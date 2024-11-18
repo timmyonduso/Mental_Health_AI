@@ -1,7 +1,7 @@
 import './global.css';
 // App.js
 import { StyleSheet, Text, View } from 'react-native';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Provider} from 'react-redux';
 import { store } from './store';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from './src/screens/HomeScreen';
@@ -29,33 +29,35 @@ import GroupChatScreen from './src/screens/GroupChatScreen';
 import ProfessionalChatScreen from './src/screens/ProfessionalChatScreen';
 import ProfessionalScreen from './src/screens/ProfessionalScreen';
 import ProfessionalDetailsScreen from './src/screens/ProfessionalDetailsScreen';
+import { ThemeProvider, useTheme } from './themeContext';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function MainTabs() {
-  const dispatch = useDispatch();
-  const user = useSelector(selectUser);
-  const { fetchedUser, loading, error } = useUserFetch(user?.id);
+  // const dispatch = useDispatch();
+  // const user = useSelector(selectUser);
+  // const { fetchedUser, loading, error } = useUserFetch(user?.id);
 
-  useEffect(() => {
-    if (fetchedUser) {
-      dispatch(
-        setUser({
-          ...user,
-          firstName: fetchedUser.firstName,
-          lastName: fetchedUser.lastName,
-        })
-      );
-    }
-  }, [fetchedUser, dispatch]);
+  // useEffect(() => {
+  //   if (fetchedUser) {
+  //     dispatch(
+  //       setUser({
+  //         ...user,
+  //         firstName: fetchedUser.firstName,
+  //         lastName: fetchedUser.lastName,
+  //       })
+  //     );
+  //   }
+  // }, [fetchedUser, dispatch]);
+  const { theme } = useTheme();
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: '#ea580c',
-        tabBarInactiveTintColor: '#9ca3af', // gray-500
+        tabBarInactiveTintColor: theme === 'dark' ? '#9ca3af' : '#202020', // gray-500
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
@@ -93,8 +95,8 @@ function MainTabs() {
         tabBarStyle: {
           height: 67, // Optional custom height
           paddingBottom: 15,
-          borderTopColor: '#606060',
-          backgroundColor: '#000000', // Set background color to black
+          borderTopColor: theme === 'dark' ? '#606060' : '#eeeeee',
+          backgroundColor: theme === 'dark' ? '#000000' : '#ffffff',
         },
       })}
     >
@@ -139,6 +141,7 @@ function LoginStack() {
 export default function App() {
   return (
     <Provider store={store}>
+      <ThemeProvider>
       <NavigationContainer>
         <SafeAreaProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
@@ -175,6 +178,7 @@ export default function App() {
           </GestureHandlerRootView>
         </SafeAreaProvider>
       </NavigationContainer>
+      </ThemeProvider>
     </Provider>
   );
 }

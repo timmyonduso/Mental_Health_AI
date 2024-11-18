@@ -17,7 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../slices/navSlice';
 import { Ionicons } from '@expo/vector-icons';
-import TopBarTwo from '../components/TopBarTwo';
+import TopBarThree from '../components/TopBarThree';
 
 const ProfessionalScreen = () => {
   const [resume, setResume] = useState('');
@@ -72,7 +72,7 @@ const ProfessionalScreen = () => {
       <ScrollView>
         <StatusBar barStyle="light-content" backgroundColor="#101010" />
         <View className="w-full p-3 pt-6 bg-[#101010]">
-          <TopBarTwo title="Become a Professional" />
+          <TopBarThree title="Become a Professional" />
         </View>
         <View className="bg-[#101010] justify-center items-center w-full p-3">
           <View className="p-4 bg-[#202020] rounded-lg mt-3 w-full">

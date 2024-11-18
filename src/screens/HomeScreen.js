@@ -22,10 +22,11 @@ import {
   selectMoodLog,
 } from '../slices/moodSlice';
 import Professionals from '../components/Professionals';
+import { useTheme } from '../../themeContext';
 
 const HomeScreen = () => {
   const user = useSelector(selectUser);
-
+  const { theme } = useTheme();
   const moodLog = useSelector(selectMoodLog);
   const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
@@ -37,9 +38,9 @@ const HomeScreen = () => {
   }, [dispatch, user]);
 
   return (
-    <SafeAreaView className="flex-1 bg-[#101010]">
-      <StatusBar barStyle="light-content" backgroundColor="#101010" />
-      <ScrollView className="bg-[#101010]">
+    <SafeAreaView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} flex-1 `}>
+    <StatusBar barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`} backgroundColor={`${theme === 'dark' ? '#101010' : '#ffffff'}`} />
+    <ScrollView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'}`}>
         <View className="py-3 w-full">
           <View className="w-full p-3 pb-0">
             <TopBar />

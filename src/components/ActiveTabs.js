@@ -2,10 +2,11 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Linking } from 'react-native'; // Import Linking
 import { useSelector } from 'react-redux';
 import { selectCurrentTab } from '../slices/navSlice';
+import { useTheme } from '../../themeContext';
 
 const ActiveTabs = () => {
   const currentTab = useSelector(selectCurrentTab);
-
+  const {theme} = useTheme();
   // Example data resources for each tab
   const resources = {
     'Mood Tracker': [
@@ -32,21 +33,21 @@ const ActiveTabs = () => {
   const activeResources = resources[currentTab?.title] || allResources; // Show all resources if none found for current tab
 
   return (
-    <ScrollView className="p-3 pb-0 bg-[#101010]">
-      <Text className="text-white text-2xl font-bold mb-4">{currentTab?.title || 'Resources'}</Text>
+    <ScrollView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} p-3 pb-0 `}>
+      <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'} text-2xl font-bold mb-4`}>{currentTab?.title || 'Resources'}</Text>
       
       {activeResources.length > 0 ? (
         activeResources.map((resource, index) => (
-          <View key={index} className="mb-3 p-4 bg-[#202020] rounded-lg">
-            <Text className="text-white text-lg font-semibold">{resource.title}</Text>
-            <Text className="text-gray-400 mb-2">{resource.description}</Text>
+          <View key={index} className={`${theme === 'dark' ? 'bg-[#202020]' : 'bg-gray-50 border border-gray-100'} mb-3 p-4 px-3  rounded-lg`}>
+            <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{resource.title}</Text>
+            <Text className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-2`}>{resource.description}</Text>
             <TouchableOpacity onPress={() => Linking.openURL(resource.link)}>
               <Text className="text-[#ea580c]">Learn More</Text>
             </TouchableOpacity>
           </View>
         ))
       ) : (
-        <Text className="text-gray-400">No resources available for this topic.</Text>
+        <Text className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} `}>No resources available for this topic.</Text>
       )}
     </ScrollView>
   );

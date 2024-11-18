@@ -18,26 +18,13 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../config/firebaseConfig';
 import SignInWithGoogle from '../components/SignInWithGoogle';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../slices/navSlice';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    // Check if the user is already logged in
-    const checkLoginStatus = async () => {
-      const userToken = await AsyncStorage.getItem('userToken');
-      if (userToken) {
-        navigation.navigate('Main'); // Navigate to Home or any main screen
-      }
-    };
-    checkLoginStatus();
-  }, [navigation]);
 
   const handleSubmit = async () => {
     if (email && password) {
@@ -60,13 +47,10 @@ const LoginScreen = () => {
           email: user.email,
           profilePicture: user.photoURL || null,
         };
-        await AsyncStorage.setItem('userData', JSON.stringify(userData));
+        await AsyncStorage.setItem('userData', JSON.stringify(userData));    
 
-        // Dispatch the user data to Redux
-        dispatch(setUser(userData));
-
-        Alert.alert('Success', 'Logged in successfully!');
-        navigation.replace('Main'); // Navigate to Home after successful login
+        // Alert.alert('Success', 'Logged in successfully!');
+        navigation.replace('Onboarding'); // Navigate to Home after successful login
       } catch (err) {
         console.log('Error:', err.message);
         Alert.alert('Error', 'Invalid email or password.');

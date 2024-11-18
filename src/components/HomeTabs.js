@@ -4,10 +4,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { FlatList } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentTab, setCurrentTab } from '../slices/navSlice';
+import { useTheme } from '../../themeContext';
 
 const HomeTabs = ({tabs}) => {
   const dispatch = useDispatch();
-
+  const {theme} = useTheme();
   const activeTab = useSelector(selectCurrentTab);
   return (
     <View className='w-full px-2 mb-2'>
@@ -37,7 +38,9 @@ const HomeTabs = ({tabs}) => {
                 color={'#e5e7eb'}
                 />
             </View>
-            <Text className={`text-xs mt-2 text-center w-20 ${item.title===activeTab?.title ? 'text-orange-400' : 'text-gray-400'}`}>{item.title}</Text>
+            <Text className={`text-xs mt-2 text-center w-20 
+            ${item.title===activeTab?.title ? 'text-orange-500' : theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}
+            `}>{item.title}</Text>
             </TouchableOpacity>
       )}
     />

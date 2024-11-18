@@ -6,12 +6,12 @@ import { useNavigation } from '@react-navigation/native';
 const SignInWithGoogle = () => {
   const navigation = useNavigation()
   return (
-    <View className='px-3 py-4'>
+    <View className='w-full py-4'>
       <TouchableRipple 
       style={styles.button}
-      onPress={()=>navigation.navigate('Main')}
+      onPress={()=>navigation.navigate('Onboarding')}
       rippleColor={'#606060'}
-      className='border border-gray-300 '
+      className='w-full border border-gray-300 '
       >
         <View className='w-full flex-row justify-start items-center '>
         <Image

@@ -53,6 +53,21 @@ const SignupScreen = () => {
         await addDoc(collection(db, 'Users'), newUser);
         Alert.alert('Success', 'Account created successfully!');
         navigation.navigate('Login');
+
+        // const response = await fetch('http://localhost:3000/users', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify(newUser),
+        // });
+
+        // if (response.ok) {
+        //   Alert.alert('Success', 'Account created successfully!');
+        //   navigation.navigate('Login');
+        // } else {
+        //   Alert.alert('Error', 'Error creating account!');
+        // }
+
+        
       }
     } catch (error) {
       console.error('Error creating user:', error);
