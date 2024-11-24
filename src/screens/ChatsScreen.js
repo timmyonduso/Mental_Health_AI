@@ -24,6 +24,7 @@ import Markdown from 'react-native-markdown-display';
 import { color } from 'react-native-elements/dist/helpers';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
+import ChatCard from '../components/ChatCard';
 
 const ChatsScreen = () => {
   const navigation = useNavigation();
@@ -85,7 +86,7 @@ const ChatsScreen = () => {
   };
 
   return (
-    <SafeAreaView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} flex-1 `}>
+    <SafeAreaView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} relative h-screen flex-1 `}>
     <StatusBar barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`} backgroundColor={`${theme === 'dark' ? '#101010' : '#ffffff'}`} />
       <View className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} w-full p-3 pt-6`}>
         <TopBarTwo title="Chats" />
@@ -108,58 +109,15 @@ const ChatsScreen = () => {
                           key={`${conversation._id}-${index}`}
                           className="flex-row justify-between"
                         >
-                          <TouchableRipple
-                            className={`${theme === 'dark' ? 'border-b border-[#202020]' : 'border-b border-gray-200'} p-2  flex-1`}
-                            rippleColor="#999999"
-                            onPress={() => {
-                              dispatch(
-                                setQuestion({
-                                  id: conversation._id,
-                                  title:
-                                    conversation.title ||
-                                    'Untitled Conversation',
-                                })
-                              );
-                              
-                              navigation.navigate('Chat');
-                            }}
-                          >
-                            <View className='w-full flex-row justify-between items-center pl-3'>
-                              
-
-<Markdown
-  style={{
-    body: {
-      color: theme === 'dark' ? '#e5e7eb' : '#1F2937', // text color based on theme
-      fontSize: 15, // text-lg
-      fontWeight: '400', // font-medium
-      width: '75%', // w-3/4
-    },
-   
-  }}
->
- {conversation.title}
-</Markdown>
-
-                           
-                          <TouchableOpacity
-                            onPress={() => handleDeletePress(conversation._id)} // Pass the conversation ID
-                           className=' p-2 h-full '
-            >
-              <Ionicons 
-                name='ellipsis-vertical'
-                size={19}
-                color={`${theme === 'dark' ? '#e5e7eb' : '#202020'}`}
-                />
-            </TouchableOpacity>
-                            </View>
-                          </TouchableRipple>
+                         
+                         <ChatCard conversation={conversation} theme={theme} handleDeletePress={handleDeletePress}/>
                          
                         </View>
                       )
                     )
                 )
               )}
+              
             </>
           ) : (
             <Text className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}  text-center mt-4`}>
@@ -168,6 +126,13 @@ const ChatsScreen = () => {
           )}
         </View>
       </ScrollView>
+      <View className='w-fit p-3 absolute  bottom-0 right-0'>
+        <TouchableOpacity
+        onPress={() => navigation.navigate('Chat')}
+        activeOpacity={.7} className={`${theme === 'dark' ? 'bg-white' : 'bg-[#101010]'} w-fit rounded-full `}>
+          <Text className={`${theme === 'dark' ? 'text-black' : 'text-white'} text-lg font-medium p-3 px-7 text-center`}>Chat With AI</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

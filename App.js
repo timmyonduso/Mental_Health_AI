@@ -30,6 +30,7 @@ import ProfessionalChatScreen from './src/screens/ProfessionalChatScreen';
 import ProfessionalScreen from './src/screens/ProfessionalScreen';
 import ProfessionalDetailsScreen from './src/screens/ProfessionalDetailsScreen';
 import { ThemeProvider, useTheme } from './themeContext';
+import ChatScreenTwo from './src/screens/ChatScreenTwo';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -173,6 +174,7 @@ export default function App() {
                 component={ProfessionalDetailsScreen}
               />
               <Stack.Screen name="Chat" component={ChatScreen} />
+              <Stack.Screen name="ChatTwo" component={ChatScreenTwo} />
               <Stack.Screen name="Main" component={MainTabs} />
             </Stack.Navigator>
           </GestureHandlerRootView>

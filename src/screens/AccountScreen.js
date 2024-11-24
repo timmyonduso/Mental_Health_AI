@@ -174,7 +174,7 @@ const AccountScreen = () => {
             {
               title: 'Notifications',
               icon: 'notifications-outline',
-              screen: 'Account',
+              screen: 'StreamChat',
             },
             { title: 'Language', icon: 'globe-outline', screen: 'Account' },
           ].map((item, index) => (

@@ -26,7 +26,7 @@ const MoodHistory = ({ theme,moodLog, moods, onDeleteMood }) => {
       {moodLog?.length > 0 ? (
         moodLog.map((log, index) => (
           <View key={index} className={`${theme === 'dark' ? 'bg-[#202020]' : 'bg-gray-100 border border-gray-200'} p-3 w-full mb-2 flex-row justify-between items-center rounded-lg`}>
-            <View>
+            <View className='w-3/4'>
             <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'}`}>
               {moods.find((m) => m.value === log.mood)?.label || log.mood}
             </Text>

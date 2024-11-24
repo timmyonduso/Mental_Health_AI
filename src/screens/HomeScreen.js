@@ -23,6 +23,8 @@ import {
 } from '../slices/moodSlice';
 import Professionals from '../components/Professionals';
 import { useTheme } from '../../themeContext';
+import { TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const user = useSelector(selectUser);
@@ -30,7 +32,7 @@ const HomeScreen = () => {
   const moodLog = useSelector(selectMoodLog);
   const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
-
+  const navigation = useNavigation()
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchUserMoods(user.id));
@@ -64,6 +66,13 @@ const HomeScreen = () => {
           )}
         </View>
       </ScrollView>
+      <View className='w-fit p-3 absolute  bottom-0 right-0'>
+        <TouchableOpacity
+        onPress={() => navigation.navigate('Chat')}
+        activeOpacity={.7} className={`${theme === 'dark' ? 'bg-white' : 'bg-[#101010]'} w-fit rounded-full `}>
+          <Text className={`${theme === 'dark' ? 'text-black' : 'text-white'} text-lg font-medium p-3 px-7 text-center`}>Chat With AI</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

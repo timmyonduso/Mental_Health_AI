@@ -44,7 +44,7 @@ const TopBar = () => {
               messageText: '',
             })
           );
-          navigation.navigate('Chat');
+          navigation.navigate('Chats');
         }}
       >
         <Ionicons name="chatbubbles-outline" color={`${theme === 'dark' ? '#ffffff' : '#101010'}`} size={28} />

@@ -12,16 +12,21 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker'; // To pick images
+import * as DocumentPicker from 'expo-document-picker'; // To pick documents
 import { TouchableRipple } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../slices/navSlice';
 import { Ionicons } from '@expo/vector-icons';
+import * as FileSystem from 'expo-file-system'; // To handle file previews
 import TopBarThree from '../components/TopBarThree';
 
 const ProfessionalScreen = () => {
-  const [resume, setResume] = useState('');
+  const [resume, setResume] = useState(null); // Resume file
   const [description, setDescription] = useState('');
+  const [idFront, setIdFront] = useState(null); // ID front image
+  const [idBack, setIdBack] = useState(null); // ID back image
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
@@ -29,8 +34,8 @@ const ProfessionalScreen = () => {
   const user = useSelector(selectUser);
 
   const handleSubmit = async () => {
-    if (!resume || !description) {
-      Alert.alert('Error', 'Please fill in all fields');
+    if (!resume || !description || !idFront || !idBack) {
+      Alert.alert('Error', 'Please fill in all fields and upload the required files.');
       return;
     }
 
@@ -43,6 +48,8 @@ const ProfessionalScreen = () => {
         email: user.email,
         resume,
         description,
+        idFront,
+        idBack,
         status: false,
       };
 
@@ -64,6 +71,31 @@ const ProfessionalScreen = () => {
       Alert.alert('Error', 'Could not create professional profile.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Pick an image
+  const pickImage = async (setImage) => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  // Pick a document
+  const pickDocument = async (setDocument) => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: '*/*', // Accept all file types
+    });
+
+    if (result.type !== 'cancel') {
+      setDocument(result);
     }
   };
 
@@ -101,20 +133,74 @@ const ProfessionalScreen = () => {
         </View>
 
         <View style={{ padding: 16 }}>
-          <TextInput
-            placeholder="Enter Resume Link"
-            className="mt-3 h-14 px-3 border border-gray-300 rounded-md text-lg"
-            value={resume}
-            onChangeText={setResume}
-          />
+        
+<Text className='my-3 font-semibold text-lg'>Tell us about you</Text>
+
           <TextInput
             placeholder="Enter Professional Description"
-            className="mt-3 h-32 px-3 py-2 border border-gray-300 rounded-md text-lg"
+            className=" h-32 px-3 py-2 border border-gray-300 rounded-md text-lg"
             value={description}
             onChangeText={setDescription}
             multiline
-            textAlignVertical="top" // This ensures the text starts from the top
+            textAlignVertical="top"
           />
+
+<Text className='my-3 font-semibold text-lg'>Upload all documents</Text>
+<TouchableRipple
+            onPress={() => pickDocument(setResume)}
+            className="border border-gray-300  items-center justify-center h-32 w-full rounded-lg"
+          >
+            <View className="items-center justify-center">
+              <Ionicons name="cloud-upload-outline" color={'#4b5563'} size={28} />
+              <Text className="text-gray-600">
+                {resume ? 'Resume Uploaded' : 'Upload Resume'}
+              </Text>
+            </View>
+          </TouchableRipple>
+          {resume && (
+            <View className="mt-2">
+              <Text className="text-gray-400">File Name: {resume.name}</Text>
+              <TouchableOpacity
+                onPress={() => Alert.alert('Open Document', 'Document preview not supported in-app')}
+              >
+                <Text className="text-blue-500 underline">View Document</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <TouchableRipple
+            onPress={() => pickImage(setIdFront)}
+            className="border border-gray-300 items-center justify-center h-64 w-full rounded-lg mt-3"
+          >
+            {idFront ? (
+              <Image
+                source={{ uri: idFront }}
+                className="w-full h-full rounded-lg"
+              />
+            ) : (
+              <View className="items-center justify-center">
+                <Ionicons name="cloud-upload-outline" color={'#4b5563'} size={28} />
+                <Text className="text-gray-600">Upload ID Front</Text>
+              </View>
+            )}
+          </TouchableRipple>
+
+          <TouchableRipple
+            onPress={() => pickImage(setIdBack)}
+            className="border border-gray-300 items-center justify-center h-64 w-full rounded-lg mt-3"
+          >
+            {idBack ? (
+              <Image
+                source={{ uri: idBack }}
+                className="w-full h-full rounded-lg"
+              />
+            ) : (
+              <View className="items-center justify-center">
+                <Ionicons name="cloud-upload-outline" color={'#4b5563'} size={28} />
+                <Text className="text-gray-600">Upload ID Back</Text>
+              </View>
+            )}
+          </TouchableRipple>
 
           <TouchableRipple
             onPress={handleSubmit}
@@ -129,16 +215,8 @@ const ProfessionalScreen = () => {
             rippleColor={'#707070'}
             disabled={loading}
           >
-            <View
-              style={{
-                width: '100%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Text
-                style={{ color: '#ffffff', fontSize: 18, fontWeight: '600' }}
-              >
+            <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: '#ffffff', fontSize: 18, fontWeight: '600' }}>
                 {loading ? 'Saving...' : 'Save Profile'}
               </Text>
             </View>
@@ -155,9 +233,7 @@ const ProfessionalScreen = () => {
             }}
           >
             <ActivityIndicator size="large" color="#ffffff" />
-            <Text style={{ color: '#ffffff', marginTop: 10 }}>
-              Please wait...
-            </Text>
+            <Text style={{ color: '#ffffff', marginTop: 10 }}>Please wait...</Text>
           </View>
         </Modal>
       </ScrollView>

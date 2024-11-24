@@ -129,14 +129,18 @@ const ChatScreen = () => {
       </ScrollView>
 
       <View  className={`${theme === 'dark' ? 'bg-[#000000] border-t border-[#303030]' : 'bg-gray-100 border-t border-gray-200'} flex-row items-center w-full  p-3 pt-2 pb-4`}>
-        <TextInput
-          className={`${theme === 'dark' ? 'bg-[#202020] text-gray-200' : 'bg-white text-black'} flex-1 h-[52px] px-5  rounded-full text-lg`}
-          value={message}
-          onChangeText={setMessage}
-          placeholder="Enter a prompt here..."
-          placeholderTextColor="#808080"
-          editable={!loading}
-        />
+      <TextInput
+  className={`${
+    theme === 'dark' ? 'bg-[#202020] text-gray-200' : 'bg-white text-black'
+  } flex-1 h-[52px] px-5 rounded-full text-lg`}
+  value={message}
+  onChangeText={(text) => setMessage(String(text))}
+  placeholder="Enter a prompt here..."
+  placeholderTextColor="#808080"
+  editable={!loading}
+  keyboardType="default" 
+/>
+
         <TouchableOpacity
           onPress={handleSubmit}
           className="ml-4"
