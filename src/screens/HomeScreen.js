@@ -32,7 +32,7 @@ const HomeScreen = () => {
   const moodLog = useSelector(selectMoodLog);
   const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchUserMoods(user.id));
@@ -40,9 +40,16 @@ const HomeScreen = () => {
   }, [dispatch, user]);
 
   return (
-    <SafeAreaView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} flex-1 `}>
-    <StatusBar barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`} backgroundColor={`${theme === 'dark' ? '#101010' : '#ffffff'}`} />
-    <ScrollView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'}`}>
+    <SafeAreaView
+      className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} flex-1 `}
+    >
+      <StatusBar
+        barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`}
+        backgroundColor={`${theme === 'dark' ? '#101010' : '#ffffff'}`}
+      />
+      <ScrollView
+        className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'}`}
+      >
         <View className="py-3 w-full">
           <View className="w-full p-3 pb-0">
             <TopBar />
@@ -66,11 +73,21 @@ const HomeScreen = () => {
           )}
         </View>
       </ScrollView>
-      <View className='w-fit p-3 absolute  bottom-0 right-0'>
+      <View className="w-fit p-3 absolute  bottom-0 right-0">
         <TouchableOpacity
-        onPress={() => navigation.navigate('Chat')}
-        activeOpacity={.7} className={`${theme === 'dark' ? 'bg-white' : 'bg-[#101010]'} w-fit rounded-full `}>
-          <Text className={`${theme === 'dark' ? 'text-black' : 'text-white'} text-lg font-medium p-3 px-7 text-center`}>Chat With AI</Text>
+          onPress={() => navigation.navigate('Chat')}
+          activeOpacity={0.7}
+          className={`${
+            theme === 'dark' ? 'bg-white' : 'bg-[#101010]'
+          } w-fit rounded-full `}
+        >
+          <Text
+            className={`${
+              theme === 'dark' ? 'text-black' : 'text-white'
+            } text-lg font-medium p-3 px-7 text-center`}
+          >
+            Chat With AI
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

@@ -8,7 +8,7 @@ import { useTheme } from '../../themeContext';
 
 const TopBar = () => {
   const user = useSelector(selectUser);
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   return (
@@ -24,13 +24,27 @@ const TopBar = () => {
             className="w-12 h-12 rounded-full"
           />
         ) : (
-          <View className={`${theme === 'dark' ? 'bg-[#303030]' : 'bg-[#303030]'} w-12 h-12 rounded-full justify-center items-center`}>
-            <Ionicons name="person-outline" size={20} color={`${theme === 'dark' ? '#e5e7eb' : '#e5e7eb'}`} />
+          <View
+            className={`${
+              theme === 'dark' ? 'bg-[#303030]' : 'bg-[#303030]'
+            } w-12 h-12 rounded-full justify-center items-center`}
+          >
+            <Ionicons
+              name="person-outline"
+              size={20}
+              color={`${theme === 'dark' ? '#e5e7eb' : '#e5e7eb'}`}
+            />
           </View>
         )}
 
         <View>
-          <Text className={`${theme === 'dark' ? 'text-gray-100' : 'text-black'} text-xl font-semibold`}>👋 Hello,</Text>
+          <Text
+            className={`${
+              theme === 'dark' ? 'text-gray-100' : 'text-black'
+            } text-xl font-semibold`}
+          >
+            👋 Hello,
+          </Text>
           <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'}`}>
             {user?.firstName} {user?.lastName}
           </Text>
@@ -47,7 +61,11 @@ const TopBar = () => {
           navigation.navigate('Chats');
         }}
       >
-        <Ionicons name="chatbubbles-outline" color={`${theme === 'dark' ? '#ffffff' : '#101010'}`} size={28} />
+        <Ionicons
+          name="chatbubbles-outline"
+          color={`${theme === 'dark' ? '#ffffff' : '#101010'}`}
+          size={28}
+        />
       </TouchableOpacity>
     </View>
   );

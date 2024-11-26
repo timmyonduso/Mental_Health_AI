@@ -1,7 +1,7 @@
 import './global.css';
 // App.js
 import { StyleSheet, Text, View } from 'react-native';
-import { Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import { store } from './store';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from './src/screens/HomeScreen';
@@ -39,7 +39,7 @@ const Stack = createStackNavigator();
 function MainTabs() {
   // const dispatch = useDispatch();
   // const user = useSelector(selectUser);
-  // const { fetchedUser, loading, error } = useUserFetch(user?.id);
+  // const { fetchedUser, loading, error } = useUserFetch(user);
 
   // useEffect(() => {
   //   if (fetchedUser) {
@@ -143,43 +143,44 @@ export default function App() {
   return (
     <Provider store={store}>
       <ThemeProvider>
-      <NavigationContainer>
-        <SafeAreaProvider>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <Stack.Navigator
-              initialRouteName="Onboarding"
-              screenOptions={{
-                headerShown: false,
-                gestureEnabled: false,
-                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-                transitionSpec: {
-                  open: { animation: 'timing', config: { duration: 500 } },
-                  close: { animation: 'timing', config: { duration: 500 } },
-                },
-              }}
-            >
-              <Stack.Screen name="Onboarding" component={OnBoardingScreen} />
-              <Stack.Screen name="LoginStack" component={LoginStack} />
-              <Stack.Screen name="GroupChat" component={GroupChatScreen} />
-              <Stack.Screen
-                name="ProfessionalChat"
-                component={ProfessionalChatScreen}
-              />
-              <Stack.Screen
-                name="Professional"
-                component={ProfessionalScreen}
-              />
-              <Stack.Screen
-                name="ProfessionalDetails"
-                component={ProfessionalDetailsScreen}
-              />
-              <Stack.Screen name="Chat" component={ChatScreen} />
-              <Stack.Screen name="ChatTwo" component={ChatScreenTwo} />
-              <Stack.Screen name="Main" component={MainTabs} />
-            </Stack.Navigator>
-          </GestureHandlerRootView>
-        </SafeAreaProvider>
-      </NavigationContainer>
+        <NavigationContainer>
+          <SafeAreaProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <Stack.Navigator
+                initialRouteName="Onboarding"
+                screenOptions={{
+                  headerShown: false,
+                  gestureEnabled: false,
+                  cardStyleInterpolator:
+                    CardStyleInterpolators.forHorizontalIOS,
+                  transitionSpec: {
+                    open: { animation: 'timing', config: { duration: 500 } },
+                    close: { animation: 'timing', config: { duration: 500 } },
+                  },
+                }}
+              >
+                <Stack.Screen name="Onboarding" component={OnBoardingScreen} />
+                <Stack.Screen name="LoginStack" component={LoginStack} />
+                <Stack.Screen name="GroupChat" component={GroupChatScreen} />
+                <Stack.Screen
+                  name="ProfessionalChat"
+                  component={ProfessionalChatScreen}
+                />
+                <Stack.Screen
+                  name="Professional"
+                  component={ProfessionalScreen}
+                />
+                <Stack.Screen
+                  name="ProfessionalDetails"
+                  component={ProfessionalDetailsScreen}
+                />
+                <Stack.Screen name="Chat" component={ChatScreen} />
+                <Stack.Screen name="ChatTwo" component={ChatScreenTwo} />
+                <Stack.Screen name="Main" component={MainTabs} />
+              </Stack.Navigator>
+            </GestureHandlerRootView>
+          </SafeAreaProvider>
+        </NavigationContainer>
       </ThemeProvider>
     </Provider>
   );

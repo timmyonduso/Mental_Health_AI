@@ -21,6 +21,7 @@ import { selectUser } from '../slices/navSlice';
 import { Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system'; // To handle file previews
 import TopBarThree from '../components/TopBarThree';
+import apiRequest from '../utils/api';
 
 const ProfessionalScreen = () => {
   const [resume, setResume] = useState(null); // Resume file
@@ -35,32 +36,70 @@ const ProfessionalScreen = () => {
 
   const handleSubmit = async () => {
     if (!resume || !description || !idFront || !idBack) {
-      Alert.alert('Error', 'Please fill in all fields and upload the required files.');
+      Alert.alert(
+        'Error',
+        'Please fill in all fields and upload the required files.'
+      );
       return;
     }
 
     setLoading(true);
     try {
+      // Helper function to upload files to Cloudinary
+      const uploadToCloudinary = async (file, folder) => {
+        const formData = new FormData();
+        formData.append('file', {
+          uri: file.uri,
+          type: file.mimeType || 'application/pdf', // Default to PDF for documents
+          name: file.name || `${folder}_${Date.now()}`, // Ensure the file has a name
+        });
+        formData.append('upload_preset', 'serenityApp'); // Replace with your Cloudinary preset
+        formData.append('folder', folder);
+
+        const response = await fetch(
+          'https://api.cloudinary.com/v1_1/victorkib/upload',
+          {
+            method: 'POST',
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          const errorResponse = await response.text(); // Get detailed error response
+          console.error('Cloudinary upload error:', errorResponse);
+          throw new Error('Cloudinary upload failed');
+        }
+
+        const data = await response.json();
+        return data.secure_url;
+      };
+
+      // Upload files to Cloudinary
+      const idFrontUrl = await uploadToCloudinary({ uri: idFront }, 'id_front');
+      const idBackUrl = await uploadToCloudinary({ uri: idBack }, 'id_back');
+      const resumeUrl = await uploadToCloudinary(resume, 'resumes');
+
+      // Create new professional profile data
       const newProfessional = {
-        userId: user.id,
+        userId: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        resume,
+        resume: resumeUrl,
         description,
-        idFront,
-        idBack,
+        idFront: idFrontUrl,
+        idBack: idBackUrl,
         status: false,
       };
 
       // Send data to MongoDB through the backend server
-      const response = await fetch('http://localhost:3000/professionals', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newProfessional),
-      });
+      const response = await apiRequest.post(
+        '/professional/postProfessional',
+        newProfessional
+      );
 
-      if (response.ok) {
+      console.log('responseFromDb:', response.data);
+      if (response.status) {
         Alert.alert('Success', 'Professional profile created successfully!');
         navigation.navigate('Home');
       } else {
@@ -88,14 +127,19 @@ const ProfessionalScreen = () => {
     }
   };
 
-  // Pick a document
   const pickDocument = async (setDocument) => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: '*/*', // Accept all file types
-    });
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: '*/*', // Accept all file types
+      });
 
-    if (result.type !== 'cancel') {
-      setDocument(result);
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const document = result.assets[0]; // Access the first file from the assets array
+        setDocument(document); // Save document details to state
+      }
+    } catch (error) {
+      console.error('Error picking document:', error);
+      Alert.alert('Error', 'Failed to pick a document.');
     }
   };
 
@@ -133,8 +177,7 @@ const ProfessionalScreen = () => {
         </View>
 
         <View style={{ padding: 16 }}>
-        
-<Text className='my-3 font-semibold text-lg'>Tell us about you</Text>
+          <Text className="my-3 font-semibold text-lg">Tell us about you</Text>
 
           <TextInput
             placeholder="Enter Professional Description"
@@ -145,13 +188,19 @@ const ProfessionalScreen = () => {
             textAlignVertical="top"
           />
 
-<Text className='my-3 font-semibold text-lg'>Upload all documents</Text>
-<TouchableRipple
+          <Text className="my-3 font-semibold text-lg">
+            Upload all documents
+          </Text>
+          <TouchableRipple
             onPress={() => pickDocument(setResume)}
             className="border border-gray-300  items-center justify-center h-32 w-full rounded-lg"
           >
             <View className="items-center justify-center">
-              <Ionicons name="cloud-upload-outline" color={'#4b5563'} size={28} />
+              <Ionicons
+                name="cloud-upload-outline"
+                color={'#4b5563'}
+                size={28}
+              />
               <Text className="text-gray-600">
                 {resume ? 'Resume Uploaded' : 'Upload Resume'}
               </Text>
@@ -161,7 +210,12 @@ const ProfessionalScreen = () => {
             <View className="mt-2">
               <Text className="text-gray-400">File Name: {resume.name}</Text>
               <TouchableOpacity
-                onPress={() => Alert.alert('Open Document', 'Document preview not supported in-app')}
+                onPress={() =>
+                  Alert.alert(
+                    'Open Document',
+                    'Document preview not supported in-app'
+                  )
+                }
               >
                 <Text className="text-blue-500 underline">View Document</Text>
               </TouchableOpacity>
@@ -179,7 +233,11 @@ const ProfessionalScreen = () => {
               />
             ) : (
               <View className="items-center justify-center">
-                <Ionicons name="cloud-upload-outline" color={'#4b5563'} size={28} />
+                <Ionicons
+                  name="cloud-upload-outline"
+                  color={'#4b5563'}
+                  size={28}
+                />
                 <Text className="text-gray-600">Upload ID Front</Text>
               </View>
             )}
@@ -196,7 +254,11 @@ const ProfessionalScreen = () => {
               />
             ) : (
               <View className="items-center justify-center">
-                <Ionicons name="cloud-upload-outline" color={'#4b5563'} size={28} />
+                <Ionicons
+                  name="cloud-upload-outline"
+                  color={'#4b5563'}
+                  size={28}
+                />
                 <Text className="text-gray-600">Upload ID Back</Text>
               </View>
             )}
@@ -215,8 +277,16 @@ const ProfessionalScreen = () => {
             rippleColor={'#707070'}
             disabled={loading}
           >
-            <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ color: '#ffffff', fontSize: 18, fontWeight: '600' }}>
+            <View
+              style={{
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Text
+                style={{ color: '#ffffff', fontSize: 18, fontWeight: '600' }}
+              >
                 {loading ? 'Saving...' : 'Save Profile'}
               </Text>
             </View>
@@ -233,7 +303,9 @@ const ProfessionalScreen = () => {
             }}
           >
             <ActivityIndicator size="large" color="#ffffff" />
-            <Text style={{ color: '#ffffff', marginTop: 10 }}>Please wait...</Text>
+            <Text style={{ color: '#ffffff', marginTop: 10 }}>
+              Please wait...
+            </Text>
           </View>
         </Modal>
       </ScrollView>

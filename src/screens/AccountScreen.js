@@ -7,7 +7,7 @@ import {
   StatusBar,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import TopBarTwo from '../components/TopBarTwo';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons'; // Import icons for styling options
@@ -17,13 +17,16 @@ import { selectUser } from '../slices/navSlice'; // Ensure clearUser is defined 
 import { auth } from '../config/firebaseConfig'; // Import Firebase auth
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import { signOut } from 'firebase/auth'; // Import signOut from Firebase
-import useUserFetch from '../hooks/useUserFetch';
+
 import { useTheme } from '../../themeContext';
 import { Button } from 'react-native';
+import ProfilePictureUpdater from '../components/ProfilePictureUpdater';
 
 const AccountScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+
   const user = useSelector(selectUser);
   const { theme, toggleTheme } = useTheme();
 
@@ -33,12 +36,11 @@ const AccountScreen = () => {
       // Sign out from Firebase
       await signOut(auth);
 
-     
       // Clear user data from AsyncStorage
       await AsyncStorage.removeItem('userToken');
       await AsyncStorage.removeItem('userData');
- 
-      navigation.replace('LoginStack')
+
+      navigation.replace('LoginStack');
       // navigation.replace('LoginStack'); // Adjust the name to match your login screen
     } catch (error) {
       console.error('Logout error:', error);
@@ -77,59 +79,123 @@ const AccountScreen = () => {
     }
   };
 
+  const closeModal = () => {
+    setShowUpdateModal(false);
+  };
+
   return (
-    <SafeAreaView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} flex-1 `}>
-      <StatusBar barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`} backgroundColor={`${theme === 'dark' ? '#101010' : '#ffffff'}`} />
+    <SafeAreaView
+      className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} flex-1 `}
+    >
+      <StatusBar
+        barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`}
+        backgroundColor={`${theme === 'dark' ? '#101010' : '#ffffff'}`}
+      />
 
       <View className="w-full p-3 pt-6">
         <TopBarTwo title="Account" />
       </View>
 
-      <ScrollView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} py-3 w-full`}>
+      <ScrollView
+        className={`${
+          theme === 'dark' ? 'bg-[#101010]' : 'bg-white'
+        } py-3 w-full`}
+      >
         {/* Account Information Section */}
-        <View className={`${theme === 'dark' ? 'bg-[#202020]' : 'bg-gray-50 border border-gray-100'} p-4 rounded-lg m-3`}>
+        <View
+          className={`${
+            theme === 'dark'
+              ? 'bg-[#202020]'
+              : 'bg-gray-50 border border-gray-100'
+          } p-4 rounded-lg m-3`}
+        >
           <View className="justify-center items-center">
             {user?.profilePicture ? (
-              <Image
-                resizeMode="contain"
-                source={{ uri: user.profilePicture }}
-                className="w-32 h-32 rounded-full"
-              />
+              <TouchableOpacity
+                onPress={() => setShowUpdateModal(!showUpdateModal)}
+              >
+                <Image
+                  resizeMode="contain"
+                  source={{
+                    uri: user.profilePicture || 'defaultProfilePicUri',
+                  }}
+                  style={{ width: 100, height: 100, borderRadius: 50 }}
+                />
+              </TouchableOpacity>
             ) : (
-              <View className={`${theme === 'dark' ? 'bg-[#303030] ' : 'bg-gray-100'} w-32 h-32 rounded-full justify-center items-center`}>
-                <Ionicons name="person-outline" size={40} color={`${theme === 'dark' ? '#e5e7eb' : '#202020'}`} />
+              <View
+                className={`${
+                  theme === 'dark' ? 'bg-[#303030] ' : 'bg-gray-100'
+                } w-32 h-32 rounded-full justify-center items-center`}
+              >
+                <Ionicons
+                  name="person-outline"
+                  size={40}
+                  color={`${theme === 'dark' ? '#e5e7eb' : '#202020'}`}
+                />
               </View>
             )}
-            <Text className={`${theme === 'dark' ? 'text-gray-400' : 'text-black'} text-xl mt-1`}>
+            <Text
+              className={`${
+                theme === 'dark' ? 'text-gray-400' : 'text-black'
+              } text-xl mt-1`}
+            >
               {user?.firstName} {user?.lastName}
             </Text>
-            <Text className={`${theme === 'dark' ? 'text-gray-400' : 'text-black'} `}>{user?.email}</Text>
+            <Text
+              className={`${
+                theme === 'dark' ? 'text-gray-400' : 'text-black'
+              } `}
+            >
+              {user?.email}
+            </Text>
           </View>
         </View>
 
+        {showUpdateModal && <ProfilePictureUpdater closeModal={closeModal} />}
         {/* More Section */}
         <View className="p-3">
-          <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'} text-lg font-semibold mb-2`}>More</Text>
-        
-        <TouchableRipple
-              className={`${theme === 'dark' ? 'bg-[#202020]' : 'bg-gray-50 border border-gray-100'} p-4 rounded-lg my-1`}
-              onPress={toggleTheme}
-              rippleColor={'#999999'}
-            >
-              <View className="flex-row items-center justify-between">
-                <View className="flex-row items-center">
-                  <Ionicons name={`${theme === 'dark' ? 'sunny-outline' : 'moon-outline'}`} size={24} color="#ea580c" />
-                  <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'} text-lg ml-3`}>
-                    {theme === 'dark' ? <>Light Mode</> : <>Dark Mode</>}
-                  </Text>
-                </View>
+          <Text
+            className={`${
+              theme === 'dark' ? 'text-white' : 'text-black'
+            } text-lg font-semibold mb-2`}
+          >
+            More
+          </Text>
+
+          <TouchableRipple
+            className={`${
+              theme === 'dark'
+                ? 'bg-[#202020]'
+                : 'bg-gray-50 border border-gray-100'
+            } p-4 rounded-lg my-1`}
+            onPress={toggleTheme}
+            rippleColor={'#999999'}
+          >
+            <View className="flex-row items-center justify-between">
+              <View className="flex-row items-center">
                 <Ionicons
-                  name="chevron-forward-outline"
-                  size={20}
+                  name={`${
+                    theme === 'dark' ? 'sunny-outline' : 'moon-outline'
+                  }`}
+                  size={24}
                   color="#ea580c"
                 />
+                <Text
+                  className={`${
+                    theme === 'dark' ? 'text-white' : 'text-black'
+                  } text-lg ml-3`}
+                >
+                  {theme === 'dark' ? <>Light Mode</> : <>Dark Mode</>}
+                </Text>
               </View>
-            </TouchableRipple>
+              <Ionicons
+                name="chevron-forward-outline"
+                size={20}
+                color="#ea580c"
+              />
+            </View>
+          </TouchableRipple>
 
           {[
             {
@@ -142,14 +208,24 @@ const AccountScreen = () => {
           ].map((item, index) => (
             <TouchableRipple
               key={index}
-              className={`${theme === 'dark' ? 'bg-[#202020]' : 'bg-gray-50 border border-gray-100'} p-4 rounded-lg my-1`}
+              className={`${
+                theme === 'dark'
+                  ? 'bg-[#202020]'
+                  : 'bg-gray-50 border border-gray-100'
+              } p-4 rounded-lg my-1`}
               onPress={() => navigation.navigate(item.screen)}
               rippleColor={'#999999'}
             >
               <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center">
                   <Ionicons name={item.icon} size={24} color="#ea580c" />
-                  <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'} text-lg ml-3`}>{item.title}</Text>
+                  <Text
+                    className={`${
+                      theme === 'dark' ? 'text-white' : 'text-black'
+                    } text-lg ml-3`}
+                  >
+                    {item.title}
+                  </Text>
                 </View>
                 <Ionicons
                   name="chevron-forward-outline"
@@ -163,7 +239,13 @@ const AccountScreen = () => {
 
         {/* Settings Section */}
         <View className="p-3">
-        <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'} text-lg font-semibold mb-2`}>Settings</Text>
+          <Text
+            className={`${
+              theme === 'dark' ? 'text-white' : 'text-black'
+            } text-lg font-semibold mb-2`}
+          >
+            Settings
+          </Text>
 
           {[
             {
@@ -180,14 +262,24 @@ const AccountScreen = () => {
           ].map((item, index) => (
             <TouchableRipple
               key={index}
-              className={`${theme === 'dark' ? 'bg-[#202020]' : 'bg-gray-50 border border-gray-100'} p-4 rounded-lg my-1`}
+              className={`${
+                theme === 'dark'
+                  ? 'bg-[#202020]'
+                  : 'bg-gray-50 border border-gray-100'
+              } p-4 rounded-lg my-1`}
               onPress={() => navigation.navigate(item.screen)}
               rippleColor={'#999999'}
             >
               <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center">
                   <Ionicons name={item.icon} size={24} color="#ea580c" />
-                  <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'} text-lg ml-3`}>{item.title}</Text>
+                  <Text
+                    className={`${
+                      theme === 'dark' ? 'text-white' : 'text-black'
+                    } text-lg ml-3`}
+                  >
+                    {item.title}
+                  </Text>
                 </View>
                 <Ionicons
                   name="chevron-forward-outline"

@@ -17,6 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import { auth, db } from '../config/firebaseConfig';
+import apiRequest from '../utils/api';
 
 const SignupScreen = () => {
   const [firstName, setFirstName] = useState('');
@@ -43,31 +44,37 @@ const SignupScreen = () => {
 
       // If user creation is successful, add user data to Firestore
       if (userCredential && userCredential.user) {
-        const newUser = {
-          uid: userCredential.user.uid,
+        // const newUser = {
+        //   uid: userCredential.user.uid,
+        //   firstName,
+        //   lastName,
+        //   email,
+        // };
+
+        // await addDoc(collection(db, 'Users'), newUser);
+        // Alert.alert('Success', 'Account created successfully!');
+        // navigation.navigate('Login');
+
+        const userData = {
+          id: userCredential?.user?.uid,
           firstName,
           lastName,
+          name: userCredential?.user?.name,
           email,
+          password,
+          profilePicture: userCredential?.user.photoURL || null,
         };
+        const response = await apiRequest.post(
+          '/auth/recordLoggedInUser',
+          userData
+        );
 
-        await addDoc(collection(db, 'Users'), newUser);
-        Alert.alert('Success', 'Account created successfully!');
-        navigation.navigate('Login');
-
-        // const response = await fetch('http://localhost:3000/users', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify(newUser),
-        // });
-
-        // if (response.ok) {
-        //   Alert.alert('Success', 'Account created successfully!');
-        //   navigation.navigate('Login');
-        // } else {
-        //   Alert.alert('Error', 'Error creating account!');
-        // }
-
-        
+        if (response.status) {
+          Alert.alert('Success', 'Account created successfully!');
+          navigation.navigate('Login');
+        } else {
+          Alert.alert('Error', 'Error creating account!');
+        }
       }
     } catch (error) {
       console.error('Error creating user:', error);

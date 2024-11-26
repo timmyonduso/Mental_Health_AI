@@ -43,6 +43,7 @@ const OnBoardingScreen = () => {
           ...user,
           firstName: fetchedUser.firstName,
           lastName: fetchedUser.lastName,
+          _id: fetchedUser._id,
         })
       );
     }
@@ -62,9 +63,22 @@ const OnBoardingScreen = () => {
 
   // console.log('Current User:', user);
   return (
-    <View className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-gray-100'} flex-1 justify-center items-center `}>
-      <StatusBar barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`} backgroundColor={`${theme === 'dark' ? '#101010' : '#f3f4f6'}`} />
-      <Text className={`${theme === 'dark' ? 'text-gray-200' : 'text-[#202020]'} text-4xl font-semibold`}>SerenityAI</Text>
+    <View
+      className={`${
+        theme === 'dark' ? 'bg-[#101010]' : 'bg-gray-100'
+      } flex-1 justify-center items-center `}
+    >
+      <StatusBar
+        barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`}
+        backgroundColor={`${theme === 'dark' ? '#101010' : '#f3f4f6'}`}
+      />
+      <Text
+        className={`${
+          theme === 'dark' ? 'text-gray-200' : 'text-[#202020]'
+        } text-4xl font-semibold`}
+      >
+        SerenityAI
+      </Text>
 
       <ActivityIndicator
         size={28}

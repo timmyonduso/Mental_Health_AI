@@ -25,7 +25,6 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-
   const handleSubmit = async () => {
     if (email && password) {
       setLoading(true);
@@ -47,7 +46,7 @@ const LoginScreen = () => {
           email: user.email,
           profilePicture: user.photoURL || null,
         };
-        await AsyncStorage.setItem('userData', JSON.stringify(userData));    
+        await AsyncStorage.setItem('userData', JSON.stringify(userData));
 
         // Alert.alert('Success', 'Logged in successfully!');
         navigation.replace('Onboarding'); // Navigate to Home after successful login
