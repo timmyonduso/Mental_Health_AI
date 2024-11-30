@@ -89,7 +89,6 @@ const ProfessionalScreen = () => {
         description,
         idFront: idFrontUrl,
         idBack: idBackUrl,
-        status: false,
       };
 
       // Send data to MongoDB through the backend server

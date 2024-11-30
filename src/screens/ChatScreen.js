@@ -24,6 +24,7 @@ import Markdown from 'react-native-markdown-display';
 
 const ChatScreen = () => {
   const [message, setMessage] = useState('');
+  const [chatCreatedId, setchatCreatedId] = useState('');
   const [chatHistor, setChatHistoryy] = useState([]);
   const [loading, setLoading] = useState(false);
   const user = useSelector(selectUser);
@@ -31,29 +32,20 @@ const ChatScreen = () => {
 
   const dispatch = useDispatch();
 
-  // Fetch chat history on component mount
-  useEffect(() => {
-    const fetchChatHistory = async () => {
-      try {
-        const response = await apiRequest.get(`/chats/chatHistory/${user.id}`);
-        setChatHistoryy(response.data || []);
-      } catch (error) {
-        // console.error('Error fetching chat history:', error);
-        setChatHistoryy([]);
-      }
-    };
+  const [inputHeight, setInputHeight] = useState(52);
+  // Track whether the first message has been sent
+  const [isFirstMessage, setIsFirstMessage] = useState(true);
 
-    fetchChatHistory();
-  }, []);
-
-  const handleSubmit = async () => {
-    if (!message.trim()) return; // Prevent sending empty messages
+  // Function to handle first message submission
+  const handleFirstMessage = async () => {
+    if (!message.trim()) return;
     setLoading(true);
     try {
       const response = await apiRequest.post('/chats/postChat', {
         user,
         message,
       });
+      setchatCreatedId(response.data.createdConversation._id);
       const dataResponse = await apiRequest.get(
         `/chats/chatHistory/${user.id}`
       );
@@ -65,10 +57,47 @@ const ChatScreen = () => {
         { user: 'Serenity AI', text: response.data.response },
       ]);
       setMessage('');
+      setIsFirstMessage(false); // Set flag to false after sending the first message
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Error sending first message:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Function to handle subsequent messages
+  const handleSubsequentMessages = async () => {
+    if (!message.trim()) return;
+    setLoading(true);
+    console.log('we are running!');
+    try {
+      //messageId
+      const response = await apiRequest.post(
+        `/chats/addConversation/${chatCreatedId}`,
+        {
+          user,
+          message,
+        }
+      );
+      setChatHistoryy([
+        ...chatHistor,
+        { user: user.firstName, text: message },
+        { user: 'Serenity AI', text: response.data.response },
+      ]);
+      setMessage('');
+    } catch (error) {
+      console.error('Error sending subsequent message:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Wrapper function to decide which handler to use
+  const handleMessage = () => {
+    if (isFirstMessage) {
+      handleFirstMessage();
+    } else {
+      handleSubsequentMessages();
     }
   };
 
@@ -117,13 +146,12 @@ const ChatScreen = () => {
                 >
                   {item.user}
                 </Text>
-
                 <Markdown
                   style={{
                     body: {
-                      color: theme === 'dark' ? '#FFFFFF' : '#1F2937', // text color based on theme
-                      fontSize: 15, // text-lg
-                      fontWeight: '500', // font-medium
+                      color: theme === 'dark' ? '#FFFFFF' : '#1F2937',
+                      fontSize: 15,
+                      fontWeight: '500',
                     },
                     heading1: {
                       color: theme === 'dark' ? '#FFFFFF' : '#1F2937',
@@ -151,31 +179,41 @@ const ChatScreen = () => {
           theme === 'dark'
             ? 'bg-[#000000] border-t border-[#303030]'
             : 'bg-gray-100 border-t border-gray-200'
-        } flex-row items-center w-full  p-3 pt-2 pb-4`}
+        } flex-row items-end w-full  p-3 pt-2 pb-4`}
       >
         <TextInput
           className={`${
             theme === 'dark'
               ? 'bg-[#202020] text-gray-200'
               : 'bg-white text-black'
-          } flex-1 h-[52px] px-5 rounded-full text-lg`}
+          } flex-1 px-5 rounded-[32] text-lg`}
           value={message}
           onChangeText={(text) => setMessage(String(text))}
           placeholder="Enter a prompt here..."
           placeholderTextColor="#808080"
           editable={!loading}
           keyboardType="default"
+          multiline
+          style={{
+            height: inputHeight,
+            minHeight: 52,
+            maxHeight: 250,
+            paddingVertical: 12,
+          }}
+          onContentSizeChange={(event) =>
+            setInputHeight(event.nativeEvent.contentSize.height)
+          }
         />
 
         <TouchableOpacity
-          onPress={handleSubmit}
-          className="ml-4"
+          onPress={handleMessage}
+          className="ml-4 bg-[#ea580c] rounded-full h-[52] w-[52] justify-center items-center"
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator size="small" color="#ea580c" />
+            <ActivityIndicator size="small" color="#ffffff" />
           ) : (
-            <Ionicons name="send" size={24} color="#ea580c" />
+            <Ionicons name="send" size={18} color="#ffffff" />
           )}
         </TouchableOpacity>
       </View>

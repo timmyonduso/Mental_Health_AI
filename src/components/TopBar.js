@@ -3,7 +3,7 @@ import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser, setQuestion } from '../slices/navSlice';
+import { selectUser, setConversationId } from '../slices/navSlice';
 import { useTheme } from '../../themeContext';
 
 const TopBar = () => {
@@ -53,7 +53,7 @@ const TopBar = () => {
       <TouchableOpacity
         onPress={() => {
           dispatch(
-            setQuestion({
+            setConversationId({
               id: null,
               messageText: '',
             })

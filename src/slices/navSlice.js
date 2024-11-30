@@ -4,7 +4,7 @@ const initialState = {
   user: null,
   mood: null,
   currentTab: { id: 1, title: 'Mood Tracker' },
-  question: null,
+  conversationId: null,
   chatHistory: [],
   professional: null,
   meditation: null,
@@ -24,8 +24,8 @@ export const navSlice = createSlice({
     setCurrentTab: (state, action) => {
       state.currentTab = action.payload;
     },
-    setQuestion: (state, action) => {
-      state.question = action.payload;
+    setConversationId: (state, action) => {
+      state.conversationId = action.payload;
     },
     setChatHistory: (state, action) => {
       state.chatHistory = action.payload;
@@ -46,7 +46,7 @@ export const {
   setUser,
   setMood,
   setCurrentTab,
-  setQuestion,
+  setConversationId,
   setChatHistory,
   setMeditation,
   setProfessional,
@@ -57,7 +57,7 @@ export const {
 export const selectUser = (state) => state.nav.user;
 export const selectMood = (state) => state.nav.mood;
 export const selectCurrentTab = (state) => state.nav.currentTab;
-export const selectQuestion = (state) => state.nav.question;
+export const selectConversationId = (state) => state.nav.conversationId;
 export const selectChatHistory = (state) => state.nav.chatHistory;
 export const selectMeditation = (state) => state.nav.meditation;
 export const selectProfessional = (state) => state.nav.professional;

@@ -123,17 +123,22 @@ const AccountScreen = () => {
                 />
               </TouchableOpacity>
             ) : (
-              <View
-                className={`${
-                  theme === 'dark' ? 'bg-[#303030] ' : 'bg-gray-100'
-                } w-32 h-32 rounded-full justify-center items-center`}
+              <TouchableOpacity
+                onPress={() => setShowUpdateModal(!showUpdateModal)}
               >
-                <Ionicons
-                  name="person-outline"
-                  size={40}
-                  color={`${theme === 'dark' ? '#e5e7eb' : '#202020'}`}
-                />
-              </View>
+                {' '}
+                <View
+                  className={`${
+                    theme === 'dark' ? 'bg-[#303030] ' : 'bg-gray-100'
+                  } w-32 h-32 rounded-full justify-center items-center`}
+                >
+                  <Ionicons
+                    name="person-outline"
+                    size={40}
+                    color={`${theme === 'dark' ? '#e5e7eb' : '#202020'}`}
+                  />
+                </View>
+              </TouchableOpacity>
             )}
             <Text
               className={`${

@@ -15,7 +15,6 @@ import {
   selectChatHistory,
   selectUser,
   setChatHistory,
-  setQuestion,
 } from '../slices/navSlice';
 import { TouchableRipple, IconButton } from 'react-native-paper'; // Import IconButton for the delete button
 import apiRequest from '../utils/api';
@@ -31,6 +30,7 @@ const ChatsScreen = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const chatHistory = useSelector(selectChatHistory);
+  console.log('chatHistoryChatsScreen: ', chatHistory);
   const { theme } = useTheme();
 
   // Fetch chat history on component mount
@@ -86,51 +86,76 @@ const ChatsScreen = () => {
   };
 
   return (
-    <SafeAreaView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} relative h-screen flex-1 `}>
-    <StatusBar barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`} backgroundColor={`${theme === 'dark' ? '#101010' : '#ffffff'}`} />
-      <View className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} w-full p-3 pt-6`}>
+    <SafeAreaView
+      className={`${
+        theme === 'dark' ? 'bg-[#101010]' : 'bg-white'
+      } relative h-screen flex-1 `}
+    >
+      <StatusBar
+        barStyle={`${theme === 'dark' ? 'light-content' : 'dark-content'}`}
+        backgroundColor={`${theme === 'dark' ? '#101010' : '#ffffff'}`}
+      />
+      <View
+        className={`${
+          theme === 'dark' ? 'bg-[#101010]' : 'bg-white'
+        } w-full p-3 pt-6`}
+      >
         <TopBarTwo title="Chats" />
       </View>
-      <ScrollView className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} w-full`}>
+      <ScrollView
+        className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} w-full`}
+      >
         <View className="flex-1 mt-2">
           {chatHistory && chatHistory?.length > 0 ? (
             <>
               {chatHistory?.map((chat) =>
-                chat?.messages?.map((message) =>
-                  message?.conversation
-                    ?.slice()
-                    ?.reverse()
-                    ?.map(
-                      (
-                        conversation,
-                        index // Reverse the order here
-                      ) => (
-                        <View
-                          key={`${conversation._id}-${index}`}
-                          className="flex-row justify-between"
-                        >
-                         
-                         <ChatCard conversation={conversation} theme={theme} handleDeletePress={handleDeletePress}/>
-                         
-                        </View>
-                      )
-                    )
-                )
+                chat?.messages?.map((message) => {
+                  // Get the most recent conversation (last item in the conversation array)
+                  const mostRecentConversation =
+                    message?.conversation?.slice(-1)[0]; // Get the last item in the array
+
+                  return mostRecentConversation ? (
+                    <View
+                      key={`${mostRecentConversation._id}`}
+                      className="flex-row justify-between"
+                    >
+                      <ChatCard
+                        conversation={mostRecentConversation} // Pass the most recent conversation only
+                        message={message}
+                        theme={theme}
+                        handleDeletePress={handleDeletePress}
+                      />
+                    </View>
+                  ) : null;
+                })
               )}
-              
             </>
           ) : (
-            <Text className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}  text-center mt-4`}>
+            <Text
+              className={`${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+              }  text-center mt-4`}
+            >
               No Chats Available!
             </Text>
           )}
         </View>
       </ScrollView>
-      <View className='w-fit p-3 absolute  bottom-0 right-0'>
+      <View className="w-fit p-3 absolute  bottom-0 right-0">
         <TouchableOpacity
-        onPress={() => navigation.navigate('Chat')}
-        activeOpacity={.7} className={`${theme === 'dark' ? 'bg-white' : 'bg-[#101010]'} w-fit rounded-full `}>
-          <Text className={`${theme === 'dark' ? 'text-black' : 'text-white'} text-lg font-medium p-3 px-7 text-center`}>Chat With AI</Text>
+          onPress={() => navigation.navigate('Chat')}
+          activeOpacity={0.7}
+          className={`${
+            theme === 'dark' ? 'bg-white' : 'bg-[#101010]'
+          } w-fit rounded-full `}
+        >
+          <Text
+            className={`${
+              theme === 'dark' ? 'text-black' : 'text-white'
+            } text-lg font-medium p-3 px-7 text-center`}
+          >
+            Chat With AI
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
