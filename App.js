@@ -31,6 +31,7 @@ import ProfessionalScreen from './src/screens/ProfessionalScreen';
 import ProfessionalDetailsScreen from './src/screens/ProfessionalDetailsScreen';
 import { ThemeProvider, useTheme } from './themeContext';
 import ChatScreenTwo from './src/screens/ChatScreenTwo';
+import { ToastProvider } from 'react-native-toast-notifications';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -145,40 +146,46 @@ export default function App() {
       <ThemeProvider>
         <NavigationContainer>
           <SafeAreaProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <Stack.Navigator
-                initialRouteName="Onboarding"
-                screenOptions={{
-                  headerShown: false,
-                  gestureEnabled: false,
-                  cardStyleInterpolator:
-                    CardStyleInterpolators.forHorizontalIOS,
-                  transitionSpec: {
-                    open: { animation: 'timing', config: { duration: 500 } },
-                    close: { animation: 'timing', config: { duration: 500 } },
-                  },
-                }}
-              >
-                <Stack.Screen name="Onboarding" component={OnBoardingScreen} />
-                <Stack.Screen name="LoginStack" component={LoginStack} />
-                <Stack.Screen name="GroupChat" component={GroupChatScreen} />
-                <Stack.Screen
-                  name="ProfessionalChat"
-                  component={ProfessionalChatScreen}
-                />
-                <Stack.Screen
-                  name="Professional"
-                  component={ProfessionalScreen}
-                />
-                <Stack.Screen
-                  name="ProfessionalDetails"
-                  component={ProfessionalDetailsScreen}
-                />
-                <Stack.Screen name="Chat" component={ChatScreen} />
-                <Stack.Screen name="ChatTwo" component={ChatScreenTwo} />
-                <Stack.Screen name="Main" component={MainTabs} />
-              </Stack.Navigator>
-            </GestureHandlerRootView>
+            <ToastProvider>
+              {' '}
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <Stack.Navigator
+                  initialRouteName="Onboarding"
+                  screenOptions={{
+                    headerShown: false,
+                    gestureEnabled: false,
+                    cardStyleInterpolator:
+                      CardStyleInterpolators.forHorizontalIOS,
+                    transitionSpec: {
+                      open: { animation: 'timing', config: { duration: 500 } },
+                      close: { animation: 'timing', config: { duration: 500 } },
+                    },
+                  }}
+                >
+                  <Stack.Screen
+                    name="Onboarding"
+                    component={OnBoardingScreen}
+                  />
+                  <Stack.Screen name="LoginStack" component={LoginStack} />
+                  <Stack.Screen name="GroupChat" component={GroupChatScreen} />
+                  <Stack.Screen
+                    name="ProfessionalChat"
+                    component={ProfessionalChatScreen}
+                  />
+                  <Stack.Screen
+                    name="Professional"
+                    component={ProfessionalScreen}
+                  />
+                  <Stack.Screen
+                    name="ProfessionalDetails"
+                    component={ProfessionalDetailsScreen}
+                  />
+                  <Stack.Screen name="Chat" component={ChatScreen} />
+                  <Stack.Screen name="ChatTwo" component={ChatScreenTwo} />
+                  <Stack.Screen name="Main" component={MainTabs} />
+                </Stack.Navigator>
+              </GestureHandlerRootView>
+            </ToastProvider>
           </SafeAreaProvider>
         </NavigationContainer>
       </ThemeProvider>
