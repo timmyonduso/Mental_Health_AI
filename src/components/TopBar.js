@@ -3,7 +3,7 @@ import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser, setConversationId } from '../slices/navSlice';
+import { selectUser, setQuestion } from '../slices/navSlice';
 import { useTheme } from '../../themeContext';
 
 const TopBar = () => {
@@ -19,7 +19,7 @@ const TopBar = () => {
       >
         {user && user?.profilePicture ? (
           <Image
-            resizeMode="contain"
+            resizeMode="cover"
             source={{ uri: user?.profilePicture }}
             className="w-12 h-12 rounded-full"
           />
@@ -43,7 +43,7 @@ const TopBar = () => {
               theme === 'dark' ? 'text-gray-100' : 'text-black'
             } text-xl font-semibold`}
           >
-            👋 Hello,
+            Hello,
           </Text>
           <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'}`}>
             {user?.firstName} {user?.lastName}
@@ -52,21 +52,18 @@ const TopBar = () => {
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          dispatch(
-            setConversationId({
-              id: null,
-              messageText: '',
-            })
-          );
-          navigation.navigate('Chats');
+          
+          navigation.navigate('Notifications');
         }}
       >
         <Ionicons
-          name="chatbubbles-outline"
-          color={`${theme === 'dark' ? '#ffffff' : '#101010'}`}
+          name="notifications-outline"
+          color={theme === 'dark' ? '#ffffff' : '#101010'}
           size={28}
         />
       </TouchableOpacity>
+
+     
     </View>
   );
 };

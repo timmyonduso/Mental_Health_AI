@@ -6,9 +6,7 @@ const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const systemTheme = useColorScheme(); // get system theme (light/dark)
-  const [theme, setTheme] = useState('light'); // set default to light
-
-  // Load saved theme from AsyncStorage on component mount
+  const [theme, setTheme] = useState(systemTheme); // set default to light
   useEffect(() => {
     const loadStoredTheme = async () => {
       const storedTheme = await loadTheme();

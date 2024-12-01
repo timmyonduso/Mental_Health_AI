@@ -154,7 +154,7 @@ const ProfessionalScreen = () => {
             <View className="justify-center items-center">
               {user?.profilePicture ? (
                 <Image
-                  resizeMode="contain"
+                  resizeMode="cover"
                   source={{ uri: user.profilePicture }}
                   className="w-32 h-32 rounded-full"
                 />

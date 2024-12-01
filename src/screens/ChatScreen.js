@@ -122,19 +122,19 @@ const ChatScreen = () => {
           theme === 'dark' ? 'bg-[#101010]' : 'bg-white'
         } py-3 w-full flex-1`}
       >
-        <View className="flex-1 relative p-3">
+        <View className="flex-1 relative gap-3 p-3">
           {chatHistor.length > 0 ? (
             chatHistor.map((item, index) => (
               <View
                 key={index}
-                className={`p-4 my-2 ${
+                className={`p-4 ${
                   item.user === user.firstName
                     ? `${
                         theme === 'dark' ? 'bg-[#505050]' : 'bg-gray-100'
-                      } ml-auto rounded-lg rounded-tr-none`
+                      } ml-auto max-w-[75%] rounded-3xl rounded-tr-none`
                     : `${
                         theme === 'dark' ? 'bg-[#202020]' : 'bg-gray-100'
-                      } mr-auto rounded-lg rounded-tl-none`
+                      } mr-auto max-w-[75%] rounded-3xl rounded-tl-none`
                 }`}
               >
                 <Text

@@ -1,28 +1,43 @@
-import React from 'react';
-import { View, Text, Image, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, FlatList, ActivityIndicator } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentTab, setProfessional } from '../slices/navSlice';
+import { useDispatch } from 'react-redux';
+import { setProfessional } from '../slices/navSlice';
 import { useNavigation } from '@react-navigation/native';
-import { professionalsData } from '../hooks/Database';
 import { useTheme } from '../../themeContext';
-
+import apiRequest from '../utils/api';
+import { Ionicons } from '@expo/vector-icons';
 const Professionals = () => {
-  const currentTab = useSelector(selectCurrentTab);
-  const {theme} = useTheme();
-  const filteredProfessionals = professionalsData.filter(
-    (professional) => professional.activeTab === currentTab.title
-  );
-
+  const { theme } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  const [professionals, setProfessionals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch professionals from the backend
+  useEffect(() => {
+    const fetchProfessionals = async () => {
+      try {
+        const response = await apiRequest.get('/professional/getProfessionals');
+        setProfessionals(response.data); // Assuming response.data is an array
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching professionals:', err);
+        setError('Failed to load professionals. Please try again later.');
+        setLoading(false);
+      }
+    };
+
+    fetchProfessionals();
+  }, []);
+
   const renderProfessional = ({ item }) => (
     <TouchableRipple
       onPress={() => {
         dispatch(
-          setProfessional({
-            id: item.userId,
-          })
+          setProfessional({item})
         );
         navigation.navigate('ProfessionalDetails');
       }}
@@ -30,12 +45,32 @@ const Professionals = () => {
       rippleColor="#999999"
     >
       <View className="items-center">
-        <Image
-          source={{ uri: item.imageUrl }}
+        {item?.imageUrl ? 
+        (
+          <Image
+          source={{ uri: item?.imageUrl }}
           className="w-20 h-20 rounded-full mb-2"
         />
-        <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{item.name}</Text>
-        <Text className="text-orange-600 text-sm">{item.profession}</Text>
+        ) : 
+        (
+          <View
+                className={`${
+                  theme === 'dark' ? 'bg-[#303030] ' : 'bg-gray-100'
+                } w-20 h-20 rounded-full justify-center items-center mb-2`}
+              >
+                <Ionicons
+                  name="person-outline"
+                  size={32}
+                  color={`${theme === 'dark' ? '#e5e7eb' : '#202020'}`}
+                />
+              </View>
+        )}
+        
+        
+        <Text className={`${theme === 'dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>
+          {item.firstName} {item.lastName}
+        </Text>
+        <Text className="text-orange-600 text-sm">{item?.profession || 'Professional'} </Text>
         <Text className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} text-center text-sm mt-1`}>
           {item.description}
         </Text>
@@ -49,9 +84,13 @@ const Professionals = () => {
         Our Professionals
       </Text>
 
-      {filteredProfessionals.length > 0 ? (
+      {loading ? (
+        <ActivityIndicator size={28} color="#999999" />
+      ) : error ? (
+        <Text className="text-red-500 text-center text-lg">{error}</Text>
+      ) : professionals.length > 0 ? (
         <FlatList
-          data={filteredProfessionals}
+          data={professionals}
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={renderProfessional}
@@ -59,7 +98,7 @@ const Professionals = () => {
         />
       ) : (
         <Text className="text-gray-400 text-center text-lg mt-5">
-          No professionals available in this category.
+          No professionals available.
         </Text>
       )}
     </View>

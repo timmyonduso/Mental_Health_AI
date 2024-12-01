@@ -1,27 +1,20 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Alert, ActivityIndicator } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, setUser } from '../slices/navSlice';
 import apiRequest from '../utils/api';
 
-const ProfilePictureUpdater = ({ closeModal }) => {
-  const [imageUri, setImageUri] = useState(null);
+const ProfilePictureUpdater = ({theme}) => {
   const [loading, setLoading] = useState(false); // Track loading state
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
 
-  // Function to pick an image from the user's gallery
-  const pickImage = async () => {
+  // Function to pick an image and upload it automatically
+  const pickImageAndUpload = async () => {
     // Request camera roll permissions
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -38,20 +31,15 @@ const ProfilePictureUpdater = ({ closeModal }) => {
       aspect: [4, 3],
       quality: 1,
     });
-    console.log('result: ', result);
 
     if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+      const imageUri = result.assets[0].uri;
+      uploadImageToCloudinary(imageUri);
     }
   };
 
   // Function to upload the selected image to Cloudinary
-  const uploadImageToCloudinary = async () => {
-    if (!imageUri) {
-      Alert.alert('Error', 'Please select an image first!');
-      return;
-    }
-
+  const uploadImageToCloudinary = async (imageUri) => {
     setLoading(true); // Show loader when upload starts
 
     const data = new FormData();
@@ -79,7 +67,6 @@ const ProfilePictureUpdater = ({ closeModal }) => {
         }
       );
       const imageUrl = response.data.secure_url;
-      console.log('Uploaded image URL:', imageUrl);
 
       // Update the user's profile picture URL in the backend
       const backendResponse = await apiRequest.patch(
@@ -88,6 +75,7 @@ const ProfilePictureUpdater = ({ closeModal }) => {
           profilePicture: imageUrl,
         }
       );
+
       if (backendResponse.status) {
         // Save the new profile picture URL in Redux
         dispatch(
@@ -97,7 +85,6 @@ const ProfilePictureUpdater = ({ closeModal }) => {
           })
         );
       }
-      closeModal();
     } catch (error) {
       console.error('Error uploading image to Cloudinary:', error);
       Alert.alert('Error', 'There was an error uploading the image');
@@ -107,49 +94,17 @@ const ProfilePictureUpdater = ({ closeModal }) => {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 20, marginBottom: 10 }}>
-        Update Profile Picture
-      </Text>
-
-      {imageUri ? (
-        <Image
-          source={{ uri: imageUri }}
-          style={{
-            width: 150,
-            height: 150,
-            borderRadius: 75,
-            marginBottom: 20,
-          }}
-        />
-      ) : (
-        <View
-          style={{
-            width: 150,
-            height: 150,
-            borderRadius: 75,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#f0f0f0',
-            marginBottom: 20,
-          }}
-        >
-          <Ionicons name="person-outline" size={50} color="gray" />
-        </View>
-      )}
-
-      <TouchableOpacity onPress={pickImage} style={{ marginBottom: 20 }}>
-        <Text style={{ color: 'blue', fontSize: 18 }}>Pick an Image</Text>
-      </TouchableOpacity>
-
-      {/* Show loader if uploading */}
+    <View>
+      {/* Button to pick an image and upload automatically */}
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size={22} color="#000000" />
       ) : (
-        <TouchableOpacity onPress={uploadImageToCloudinary}>
-          <Text style={{ color: 'green', fontSize: 18 }}>
-            Upload to Cloudinary
-          </Text>
+        <TouchableOpacity
+          onPress={pickImageAndUpload}
+          
+          className={`${theme === 'dark' ? 'bg-white' : 'bg-black'}  rounded-full w-8 h-8 justify-center items-center`}
+        >
+          <MaterialIcons name="edit" color={`${theme==='dark' ? '#000000' : '#ffffff'}`} size={15} />
         </TouchableOpacity>
       )}
     </View>

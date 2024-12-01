@@ -23,6 +23,7 @@ const ChatScreenTwo = () => {
   const user = useSelector(selectUser);
   const { theme } = useTheme();
   const toast = useToast();
+  const [inputHeight, setInputHeight] = useState(52);
 
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
@@ -103,7 +104,6 @@ const ChatScreenTwo = () => {
     });
   };
 
-  const [inputHeight, setInputHeight] = useState(52);
   return (
     <SafeAreaView
       className={`${theme === 'dark' ? 'bg-[#101010]' : 'bg-white'} flex-1`}
@@ -127,13 +127,13 @@ const ChatScreenTwo = () => {
         <View className="flex-1 relative p-3">
           {chatHistory && chatHistory?.length > 0 ? (
             chatHistory?.map((item, index) => (
-              <View key={index} className="flex-1 mb-4">
+              <View key={index} className="flex-1 gap-3 mb-4">
                 {/* User Message */}
                 <View
-                  className={` my-2 ${
+                  className={` ${
                     item?.user?.sender === user?.firstName &&
                     `${
-                      theme === 'dark' ? 'bg-[#505050]' : 'bg-gray-100'
+                      theme === 'dark' ? 'bg-[#404040]' : 'bg-gray-100'
                     } ml-auto rounded-3xl max-w-[75%] rounded-tr-none`
                   }`}
                 >
@@ -147,14 +147,12 @@ const ChatScreenTwo = () => {
                     >
                       {item?.user?.sender}
                     </Text>
-                    <Text className={`font-bold text-xs text-gray-500`}>
-                      <Text className="text-gray-500 text-sm">
+                    <Text className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} font-bold text-xs `}>
                         {formatDateOrTime(item?.updatedAt)}
-                      </Text>
                     </Text>
                   </View>
 
-                  <View className="p-4 pt-2">
+                  <View className="p-4 pb-2 pt-2">
                     <Markdown
                       style={{
                         body: {
@@ -171,7 +169,7 @@ const ChatScreenTwo = () => {
 
                 {/* AI Message */}
                 <View
-                  className={` my-2 ${
+                  className={` ${
                     item?.ai?.sender !== user?.firstName &&
                     `${
                       theme === 'dark' ? 'bg-[#202020]' : 'bg-gray-100'
@@ -189,13 +187,11 @@ const ChatScreenTwo = () => {
                       {item?.ai?.sender}
                     </Text>
 
-                    <Text className={`font-bold text-xs text-gray-500`}>
-                      <Text className="text-gray-500 text-sm">
+                    <Text className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} font-bold text-xs `}>
                         {formatDateOrTime(item?.updatedAt)}
-                      </Text>
                     </Text>
                   </View>
-                  <View className="p-4 pt-2">
+                  <View className="p-4 pb-2 pt-2">
                     <Markdown
                       style={{
                         body: {
@@ -212,13 +208,8 @@ const ChatScreenTwo = () => {
               </View>
             ))
           ) : (
-            <Text
-              className={`${
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              } text-center mt-4`}
-            >
-              Start a new chat.
-            </Text>
+            <ActivityIndicator size={28} color="#999999" />
+
           )}
         </View>
       </ScrollView>

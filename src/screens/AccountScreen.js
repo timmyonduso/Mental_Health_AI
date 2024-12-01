@@ -24,9 +24,7 @@ import ProfilePictureUpdater from '../components/ProfilePictureUpdater';
 
 const AccountScreen = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-
+ 
   const user = useSelector(selectUser);
   const { theme, toggleTheme } = useTheme();
 
@@ -47,41 +45,7 @@ const AccountScreen = () => {
     }
   };
 
-  const handleUpdateProfile = async () => {
-    try {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
-        return;
-      }
 
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        const uri = result.assets[0].uri;
-        const response = await fetch(uri);
-        const blob = await response.blob();
-
-        const downloadURL = await updateProfileImage(user.uid, blob);
-
-        if (downloadURL) {
-          console.log('Profile image updated successfully!');
-        }
-      }
-    } catch (err) {
-      console.error('Error updating profile: ', err);
-    }
-  };
-
-  const closeModal = () => {
-    setShowUpdateModal(false);
-  };
 
   return (
     <SafeAreaView
@@ -110,35 +74,38 @@ const AccountScreen = () => {
           } p-4 rounded-lg m-3`}
         >
           <View className="justify-center items-center">
+           
             {user?.profilePicture ? (
-              <TouchableOpacity
-                onPress={() => setShowUpdateModal(!showUpdateModal)}
-              >
+              <View className='relative'>
                 <Image
-                  resizeMode="contain"
+                  resizeMode="cover"
                   source={{
                     uri: user.profilePicture || 'defaultProfilePicUri',
                   }}
-                  style={{ width: 100, height: 100, borderRadius: 50 }}
+                  className='w-32 h-32 rounded-full justify-center items-center'
                 />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => setShowUpdateModal(!showUpdateModal)}
-              >
-                {' '}
-                <View
-                  className={`${
-                    theme === 'dark' ? 'bg-[#303030] ' : 'bg-gray-100'
-                  } w-32 h-32 rounded-full justify-center items-center`}
-                >
-                  <Ionicons
-                    name="person-outline"
-                    size={40}
-                    color={`${theme === 'dark' ? '#e5e7eb' : '#202020'}`}
-                  />
+                 <View className='absolute right-0'>
+                  <ProfilePictureUpdater theme={theme}/>
                 </View>
-              </TouchableOpacity>
+                </View>
+            ) : (
+              <View className='relative'>
+              <View
+                className={`${
+                  theme === 'dark' ? 'bg-[#303030] ' : 'bg-gray-100'
+                } w-32 h-32 rounded-full justify-center items-center`}
+              >
+                <Ionicons
+                  name="person-outline"
+                  size={40}
+                  color={`${theme === 'dark' ? '#e5e7eb' : '#202020'}`}
+                />
+              </View>
+              <View className='absolute right-0'>
+              <ProfilePictureUpdater theme={theme}/>
+            </View>
+            </View>
+
             )}
             <Text
               className={`${
@@ -157,8 +124,7 @@ const AccountScreen = () => {
           </View>
         </View>
 
-        {showUpdateModal && <ProfilePictureUpdater closeModal={closeModal} />}
-        {/* More Section */}
+       {/* More Section */}
         <View className="p-3">
           <Text
             className={`${
@@ -168,45 +134,18 @@ const AccountScreen = () => {
             More
           </Text>
 
-          <TouchableRipple
-            className={`${
-              theme === 'dark'
-                ? 'bg-[#202020]'
-                : 'bg-gray-50 border border-gray-100'
-            } p-4 rounded-lg my-1`}
-            onPress={toggleTheme}
-            rippleColor={'#999999'}
-          >
-            <View className="flex-row items-center justify-between">
-              <View className="flex-row items-center">
-                <Ionicons
-                  name={`${
-                    theme === 'dark' ? 'sunny-outline' : 'moon-outline'
-                  }`}
-                  size={24}
-                  color="#ea580c"
-                />
-                <Text
-                  className={`${
-                    theme === 'dark' ? 'text-white' : 'text-black'
-                  } text-lg ml-3`}
-                >
-                  {theme === 'dark' ? <>Light Mode</> : <>Dark Mode</>}
-                </Text>
-              </View>
-              <Ionicons
-                name="chevron-forward-outline"
-                size={20}
-                color="#ea580c"
-              />
-            </View>
-          </TouchableRipple>
+         
 
           {[
             {
               title: 'Become a Professional',
               icon: 'person-outline',
               screen: 'Professional',
+            },
+            {
+              title: 'Notifications',
+              icon: 'notifications-outline',
+              screen: 'Notifications',
             },
             // { title: 'Notifications', icon: 'notifications-outline', screen: 'Account' },
             // { title: 'Language', icon: 'globe-outline', screen: 'Account' },
@@ -252,17 +191,49 @@ const AccountScreen = () => {
             Settings
           </Text>
 
+          <TouchableRipple
+            className={`${
+              theme === 'dark'
+                ? 'bg-[#202020]'
+                : 'bg-gray-50 border border-gray-100'
+            } p-4 rounded-lg my-1`}
+            onPress={toggleTheme}
+            rippleColor={'#999999'}
+          >
+            <View className="flex-row items-center justify-between">
+              <View className="flex-row items-center">
+                <Ionicons
+                  name={`${
+                    theme === 'dark' ? 'sunny-outline' : 'moon-outline'
+                  }`}
+                  size={24}
+                  color="#ea580c"
+                />
+                <Text
+                  className={`${
+                    theme === 'dark' ? 'text-white' : 'text-black'
+                  } text-lg ml-3`}
+                >
+                  {theme === 'dark' ? <>Light Mode</> : <>Dark Mode</>}
+                </Text>
+              </View>
+              
+              <Ionicons
+                name="chevron-forward-outline"
+                size={20}
+                color="#ea580c"
+              />
+            </View>
+          </TouchableRipple>
+
+
           {[
             {
               title: 'Privacy & Security',
               icon: 'lock-closed-outline',
               screen: 'Account',
             },
-            {
-              title: 'Notifications',
-              icon: 'notifications-outline',
-              screen: 'StreamChat',
-            },
+            
             { title: 'Language', icon: 'globe-outline', screen: 'Account' },
           ].map((item, index) => (
             <TouchableRipple

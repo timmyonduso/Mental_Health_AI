@@ -32,6 +32,7 @@ import ProfessionalDetailsScreen from './src/screens/ProfessionalDetailsScreen';
 import { ThemeProvider, useTheme } from './themeContext';
 import ChatScreenTwo from './src/screens/ChatScreenTwo';
 import { ToastProvider } from 'react-native-toast-notifications';
+import NotificationsScreen from './src/screens/NotificationsScreen';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -147,7 +148,7 @@ export default function App() {
         <NavigationContainer>
           <SafeAreaProvider>
             <ToastProvider>
-              {' '}
+              {/* {' '} */}
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <Stack.Navigator
                   initialRouteName="Onboarding"
@@ -183,6 +184,7 @@ export default function App() {
                   <Stack.Screen name="Chat" component={ChatScreen} />
                   <Stack.Screen name="ChatTwo" component={ChatScreenTwo} />
                   <Stack.Screen name="Main" component={MainTabs} />
+                  <Stack.Screen name="Notifications" component={NotificationsScreen} />
                 </Stack.Navigator>
               </GestureHandlerRootView>
             </ToastProvider>
